@@ -2,7 +2,7 @@
 
 ## About the project
 
-horizons is a web application created for people delighted with the possibilities of artificial intelligence in the area of generating images and love to shair their generated art with others.
+Horizons is a web application created for people delighted with the possibilities of artificial intelligence in the area of generating images and love to shair their generated art with others.
 
 ## Built with
 
