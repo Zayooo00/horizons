@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -21,6 +21,7 @@ import logo from '../assets/images/logo.png';
 // eslint-disable-next-line react/prop-types
 export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const location = useLocation();
 
   return (
     <>
@@ -31,14 +32,14 @@ export default function Navbar() {
           justifyContent={'space-between'}
           px={4}
         >
-          <a href="/">
+          <Link to="/">
             <Flex alignItems={'center'}>
               <Box>
                 <Image w={'40px'} src={logo} />
               </Box>
               <Text
                 ml={3}
-                mb={'3px'}
+                mb={'1px'}
                 fontSize={'2xl'}
                 letterSpacing={4}
                 color={'white'}
@@ -46,25 +47,35 @@ export default function Navbar() {
                 HORIZONS
               </Text>
             </Flex>
-          </a>
+          </Link>
           <Flex alignItems={'center'}>
-          <Link to="/login">
-            <Button
-              colorScheme="teal"
-              mr={4}
-              display={{ base: 'none', sm: 'inline-flex' }}
-            >
-              Log in
-            </Button>
+            <Link to="/login">
+              <Button
+                fontWeight={'light'}
+                background={'transparent'}
+                _hover={{
+                  bg: 'transparent',
+                }}
+                mr={4}
+                display={{ base: 'none', sm: 'inline-flex' }}
+                border={location.pathname === '/login' ? '1px' : 'none'}
+              >
+                Log in
+              </Button>
             </Link>
-            <Link to="/signup">
-            <Button
-            background={'gray.700'}
-              color="white"
-              display={{ base: 'none', sm: 'inline-flex' }}
-            >
-              Sign up
-            </Button>
+            <Link to="/sign-up">
+              <Button
+                fontWeight={'light'}
+                background={'transparent'}
+                _hover={{
+                  bg: 'transparent',
+                }}
+                color="white"
+                display={{ base: 'none', sm: 'inline-flex' }}
+                border={location.pathname === '/sign-up' ? '1px' : 'none'}
+              >
+                Sign up
+              </Button>
             </Link>
             <IconButton
               _hover={{
@@ -78,40 +89,43 @@ export default function Navbar() {
               display={{ sm: 'none' }}
               onClick={onOpen}
               ml={4}
+              mb={'3px'}
             />
           </Flex>
         </Flex>
       </Box>
 
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={'full'}>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={'md'}>
         <DrawerOverlay />
         <DrawerContent bg={'gray.900'}>
-          <DrawerCloseButton mt={'10px'} color={'white'} />
+          <DrawerCloseButton mt={'11px'} color={'white'} />
           <DrawerHeader>
-            <Flex>
-              <Image w={'40px'} src={logo} />
-              <Text
-                ml={3}
-                mb={1}
-                fontSize={'2xl'}
-                letterSpacing={4}
-                color={'white'}
-              >
-                HORIZONS
-              </Text>
-            </Flex>
+            <Link to="/">
+              <Flex>
+                <Image w={'40px'} src={logo} />
+                <Text
+                  ml={3}
+                  mt={'3px'}
+                  fontSize={'2xl'}
+                  letterSpacing={4}
+                  color={'white'}
+                >
+                  HORIZONS
+                </Text>
+              </Flex>
+            </Link>
           </DrawerHeader>
 
           <DrawerBody mt={4}>
             <Link to="/login">
-            <Button colorScheme="teal" w="100%" mb={4}>
-              Log in
-            </Button>
+              <Button fontWeight={'light'} colorScheme="teal" w="100%" mb={4}>
+                Log in
+              </Button>
             </Link>
-            <Link to="/signup">
-            <Button colorScheme="teal" w="100%">
-              Sign up
-            </Button>
+            <Link to="/sign-up">
+              <Button fontWeight={'light'} colorScheme="teal" w="100%">
+                Sign up
+              </Button>
             </Link>
           </DrawerBody>
         </DrawerContent>
