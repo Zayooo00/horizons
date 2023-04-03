@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import Navbar from '../components/Navbar';
+import signup from '../assets/images/signup.png'
 
 export default function Login() {
   return (
@@ -21,9 +22,7 @@ export default function Login() {
             display={{ base: 'none', md: 'inline-flex' }}
             alt={'Login Image'}
             objectFit={'cover'}
-            src={
-              'https://lh5.googleusercontent.com/proxy/wGaBTSMgVvDb6wWarOv2LK47Ge2yg4IxwzYp2TbenpzluCVPM9gve5pEF71elaNNS8WBELQD57vY3DuJhHyiH1DzCjZUr1Y-4e9UKhYZGL9XgHIiyUZAMf9-3-6c0xty=w1920-h937'
-            }
+            src={signup}
           />
         </Flex>
         <Flex p={8} flex={1} align={'center'} justify={'center'}>

@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import Navbar from '../components/Navbar';
 import { FcGoogle } from 'react-icons/fc';
+import login from '../assets/images/login.png'
 
 export default function Login() {
   return (
@@ -68,9 +69,7 @@ export default function Login() {
             display={{ base: 'none', md: 'inline-flex' }}
             alt={'Login Image'}
             objectFit={'cover'}
-            src={
-              'https://lh6.googleusercontent.com/proxy/LrtEOfsjg3iy5G87gQStC1jKbdk7Klxq9p_M3VLVY1D1c_3QdYOAzUl61Qys3DBY02DRosmBTQSuK_9SKdBmOrxiftmOzRo-oMsrwo_IRokLHSLhesctz1f11HX0AlFHTPcJUyRtM-fu=w1920-h937'
-            }
+            src={login}
           />
         </Flex>
       </Stack>
