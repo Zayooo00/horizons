@@ -1,8 +1,11 @@
 import React from 'react';
+import  Navbar from '../components/Navbar';
 import '../theme/css/Start.css';
 
 export default function Start() {
   return (
+    <>
+    <Navbar/>
     <div className="flex-mh-box">
       <div
         className="img-section overlay-dark-bg-1"
@@ -19,7 +22,6 @@ export default function Start() {
             <div className="ml-40">
               <h2 className="large-title-bold">
                 <span className="line1">Welcome to</span>
-                
                 <div className="text-line1-cover"></div>
                 <br />
                 <span className="line2">Horizons</span>
@@ -28,7 +30,7 @@ export default function Start() {
               </h2>
               <p className="p-style-bold-up th-20 d-flex-wrap">
                 <span className="line3">
-                  Start generating amazing AI images straight away
+                  Your image generating adventure
                 </span>
                 <div className="text-line3-cover"></div>
               </p>
@@ -46,5 +48,6 @@ export default function Start() {
         </div>
       </div>
     </div>
+    </>
   );
 }
