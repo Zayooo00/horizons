@@ -1,5 +1,79 @@
+import {
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  Image,
+  Divider,
+  Center,
+  Text,
+} from '@chakra-ui/react';
 import React from 'react';
+import Navbar from '../components/Navbar';
+import { FcGoogle } from 'react-icons/fc';
 
 export default function Login() {
-  return <div className="flex-mh-box">Login page</div>;
+  return (
+    <>
+      <Navbar />
+      <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+        <Flex
+          mt={{ base: '60px', sm: '0' }}
+          p={8}
+          flex={1}
+          align={'center'}
+          justify={'center'}
+        >
+          <Stack spacing={4} w={'full'} maxW={'md'}>
+            <Heading fontSize={'2xl'}>Log in to your account</Heading>
+            <FormControl id="email">
+              <FormLabel>Email address</FormLabel>
+              <Input type="email" />
+            </FormControl>
+            <FormControl id="password">
+              <FormLabel>Password</FormLabel>
+              <Input type="password" />
+            </FormControl>
+            <Stack spacing={6}>
+              <Button
+                bg={'#D4E45D'}
+                _hover={{
+                  bg: '#9aaa1d',
+                }}
+                color={'black'}
+                variant={'solid'}
+              >
+                Log in
+              </Button>
+            </Stack>
+            <Stack>
+              <Center>
+                <Divider w={'25%'} />
+                <Text m={2}>Or continue with:</Text>
+                <Divider w={'25%'} />
+              </Center>
+              <Center>
+                <Button rounded={'2rem'} w={'full'} bg={'white'}>
+                  <FcGoogle color="white" alt="Google Icon" />
+                </Button>
+              </Center>
+            </Stack>
+          </Stack>
+        </Flex>
+        <Flex flex={1}>
+          <Image
+            display={{ base: 'none', md: 'inline-flex' }}
+            alt={'Login Image'}
+            objectFit={'cover'}
+            src={
+              'https://lh6.googleusercontent.com/proxy/LrtEOfsjg3iy5G87gQStC1jKbdk7Klxq9p_M3VLVY1D1c_3QdYOAzUl61Qys3DBY02DRosmBTQSuK_9SKdBmOrxiftmOzRo-oMsrwo_IRokLHSLhesctz1f11HX0AlFHTPcJUyRtM-fu=w1920-h937'
+            }
+          />
+        </Flex>
+      </Stack>
+    </>
+  );
 }
