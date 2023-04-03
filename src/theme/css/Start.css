@@ -39,7 +39,7 @@ h2 {
 
 .text-line1-cover {
   position: absolute;
-  top: 0;
+  top: 5px;
   left: 0;
   width: 100%;
   height: 25%;
@@ -49,7 +49,7 @@ h2 {
 
 .text-line2-cover {
   position: absolute;
-  top: 50px;
+  top: 55px;
   left: 0;
   width: 100%;
   height: 25%;
@@ -60,7 +60,7 @@ h2 {
 
 .text-line3-cover {
   position: absolute;
-  top: 110px;
+  top: 108px;
   left: 0;
   width: 100%;
   height: 25%;
@@ -145,6 +145,8 @@ h2 {
 
   .img-section {
     width: 100%;
+    filter: blur(calc(20px - 2vw));
+    -webkit-filter: blur(calc(20px - 2vw));
   }
 
   .img-section {
@@ -211,13 +213,13 @@ h2 {
     #438885 10%,
     #379bff 67%,
     #6a6569 100%);
-    height: 18%;
+    height: 17%;
   }
 
   .responsive .text-line3-cover {
     background-color: white;
-    top: 123px;
-    height: 5%;
+    top: 108px;
+    height: 6%;
   }
 }
 
