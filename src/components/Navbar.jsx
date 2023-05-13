@@ -18,7 +18,6 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 import logo from '../assets/images/logo.png';
 
-// eslint-disable-next-line react/prop-types
 export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
@@ -32,7 +31,7 @@ export default function Navbar() {
           justifyContent={'space-between'}
           px={4}
         >
-          <Link to="/">
+          <Link to="/dashboard">
             <Flex alignItems={'center'}>
               <Box>
                 <Image w={'40px'} src={logo} />
