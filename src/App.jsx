@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Create from './pages/Create';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -58,6 +59,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Create />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
                   </ProtectedRoute>
                 }
               />
