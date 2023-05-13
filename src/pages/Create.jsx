@@ -1,10 +1,12 @@
 import React from 'react';
 
-export default function Create() {
+import Header from '../components/Header';
 
+export default function Create() {
   return (
     <>
-  <div>Generate</div>
-  </>
+      <Header />
+      <div>Generate</div>
+    </>
   );
 }
