@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ChakraProvider, Box } from '@chakra-ui/react';
-import theme from './theme/css/theme';
+
 import { AuthContextProvider } from './context/AuthContext';
-import ProtectedRouteRedirect from './components/ProtectedRouteRedirect';
 import ProtectedRoute from './components/ProtectedRoute';
+import AuthRoute from './components/AuthRoute';
+import theme from './theme/theme';
+import './theme/css/App.css';
 
 import Start from './pages/Start';
 import Login from './pages/Login';
@@ -13,7 +15,6 @@ import Dashboard from './pages/Dashboard';
 import Create from './pages/Create';
 
 function App() {
-
   return (
     <ChakraProvider theme={theme}>
       <Box bg={theme.palette.primary}>
@@ -23,25 +24,25 @@ function App() {
               <Route
                 path="/"
                 element={
-                  <ProtectedRouteRedirect>
+                  <AuthRoute>
                     <Start />
-                  </ProtectedRouteRedirect>
+                  </AuthRoute>
                 }
               />
               <Route
                 path="/login"
                 element={
-                  <ProtectedRouteRedirect>
+                  <AuthRoute>
                     <Login />
-                  </ProtectedRouteRedirect>
+                  </AuthRoute>
                 }
               />
               <Route
                 path="/sign-up"
                 element={
-                  <ProtectedRouteRedirect>
+                  <AuthRoute>
                     <SignUp />
-                  </ProtectedRouteRedirect>
+                  </AuthRoute>
                 }
               />
               <Route
@@ -52,11 +53,11 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-                <Route
+              <Route
                 path="/create"
                 element={
                   <ProtectedRoute>
-                    <Create/>
+                    <Create />
                   </ProtectedRoute>
                 }
               />

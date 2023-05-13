@@ -1,29 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
-:root {
-  font-family: 'Poppins', sans-serif;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  background: #1a1a1a;
-}
-
-html {
-  padding: 0;
-  margin: 0;
-}
-
-body {
-  font-size: 14px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-family: "Oswald", sans-serif;
-  color: #1a2023;
-  font-weight: 400;
-  margin: 0;
-  overflow: hidden;
-}
-
 img {
   vertical-align: middle;
   max-width: 100%;
