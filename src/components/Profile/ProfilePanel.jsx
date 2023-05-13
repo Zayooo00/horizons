@@ -54,12 +54,7 @@ export default function ProfilePanel() {
     <>
       <Headbar />
       <Center mx={4}>
-        <Flex
-          direction="column"
-          width="160vh"
-          minH="100vh"
-          pt="120px"
-        >
+        <Flex direction="column" width="160vh" minH="100vh" pt="120px">
           <Flex
             direction={{ base: 'column', sm: 'column', md: 'row' }}
             mb="24px"
@@ -166,12 +161,7 @@ export default function ProfilePanel() {
             templateColumns={{ sm: '1fr', xl: 'repeat(1, 1fr)' }}
             gap="22px"
           >
-            <Card
-              p="16px"
-              bg="#2a2f38"
-              rounded="2rem"
-              mb="24px"
-            >
+            <Card p="16px" bg="#2a2f38" rounded="2rem" mb="24px">
               <CardHeader p="12px 5px" mb="12px">
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Profile Information
@@ -219,12 +209,7 @@ export default function ProfilePanel() {
             templateColumns={{ sm: '1fr', xl: 'repeat(1, 1fr)' }}
             gap="22px"
           >
-            <Card
-              p="16px"
-              bg="#2a2f38"
-              rounded="2rem"
-              my="20px"
-            >
+            <Card p="16px" bg="#2a2f38" rounded="2rem" my="20px">
               <CardHeader p="12px 5px" mb="12px">
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Gallery

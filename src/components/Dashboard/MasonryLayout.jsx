@@ -35,7 +35,7 @@ export default function MasonryLayout({ children }) {
       ))}
     </Box>
   );
-};
+}
 
 MasonryLayout.propTypes = {
   children: PropTypes.node.isRequired,

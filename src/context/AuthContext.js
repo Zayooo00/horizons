@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -9,15 +9,16 @@ import {
 } from 'firebase/auth';
 import { setDoc, doc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import { auth, db } from '../firebase/firebase';
-import React from 'react';
 
 const AuthContext = createContext();
 
-// eslint-disable-next-line react/prop-types
 export function AuthContextProvider({ children }) {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+
   const createUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
@@ -39,14 +40,17 @@ export function AuthContextProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+
       if (currentUser) {
         localStorage.setItem('user', JSON.stringify(currentUser.uid));
         const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+
         if (!userDoc.exists()) {
           await setDoc(doc(db, 'users', currentUser.uid), {
             emailAddress: currentUser.email.toLowerCase(),
             dateCreated: currentUser.metadata.creationTime,
           });
+
           navigate('/dashboard');
         }
       }
@@ -55,20 +59,18 @@ export function AuthContextProvider({ children }) {
     return unsubscribe;
   }, [navigate]);
 
-  return (
-    <AuthContext.Provider
-      // eslint-disable-next-line react/jsx-no-constructed-context-values
-      value={{
-        user,
-        createUser,
-        logout,
-        signIn,
-        googleSignIn,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      createUser,
+      logout,
+      signIn,
+      googleSignIn,
+    }),
+    [user, createUser, logout, signIn, googleSignIn]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export const UserAuth = () => {
@@ -78,4 +80,8 @@ export const UserAuth = () => {
 export const getUserFromLocalStorage = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   return user;
+};
+
+AuthContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

@@ -16,8 +16,8 @@ const theme = extendTheme({
   },
 
   fonts: {
-    heading: '\'Poppins\', sans-serif',
-    body: '\'Poppins\', sans-serif',
+    heading: "'Poppins', sans-serif",
+    body: "'Poppins', sans-serif",
   },
 
   components: {
@@ -39,5 +39,6 @@ const theme = extendTheme({
         focusBorderColor: '#294747',
       },
     },
-}});
+  },
+});
 export default theme;

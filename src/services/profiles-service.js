@@ -13,10 +13,10 @@ export async function checkIfUserDocExists(currentUserId) {
 export async function uploadUserInfo(profile, avatar, currentUserId) {
   const userDocRef = doc(profilesCollection, currentUserId);
   await setDoc(userDocRef, {
-  ...profile,
-  avatar,
+    ...profile,
+    avatar,
   });
- }
+}
 
 export async function fetchUserProfile(currentUserId) {
   const userDocRef = doc(profilesCollection, currentUserId);

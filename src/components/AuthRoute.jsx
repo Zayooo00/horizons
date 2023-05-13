@@ -8,7 +8,12 @@ export default function AuthRoute({ children }) {
   const { user } = UserAuth();
   const location = useLocation();
 
-  if (user && (location.pathname === '/' || location.pathname === '/login'|| location.pathname === '/signup')) {
+  if (
+    user &&
+    (location.pathname === '/' ||
+      location.pathname === '/login' ||
+      location.pathname === '/signup')
+  ) {
     return <Navigate to="/dashboard" />;
   }
   return children;
