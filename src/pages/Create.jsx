@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Header from '../components/Header';
+import Headbar from '../components/Headbar';
 
 export default function Create() {
   return (
     <>
-      <Header />
+      <Headbar />
       <div>Generate</div>
     </>
   );

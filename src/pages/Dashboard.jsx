@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Image } from '@chakra-ui/react';
 
 import OnboardingModal from '../components/Dashboard/OnboardingModal';
-import Header from '../components/Header';
+import Headbar from '../components/Headbar';
 import MasonryLayout from '../components/Dashboard/MasonryLayout';
 import { checkIfUserDocExists } from '../services/profiles-service';
 import { getUserFromLocalStorage } from '../context/AuthContext';
@@ -42,7 +42,7 @@ export default function Dashboard() {
   return (
     <>
       {showOnboarding && <OnboardingModal />}
-      <Header />
+      <Headbar />
       <MasonryLayout>
         {images.map((src, index) => (
           <Image

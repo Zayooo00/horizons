@@ -48,13 +48,12 @@ const NavLink = ({ children, to }) => (
   </Link>
 );
 
-export default function Header() {
+export default function Headbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [userProfile, setUserProfile] = useState(null);
   const { logout, user } = UserAuth();
 
   useEffect(() => {
-    // Fetch the user profile data when the component mounts
     fetchUserProfile(user.uid).then((data) => {
       setUserProfile(data);
     });
@@ -66,7 +65,7 @@ export default function Header() {
 
   return (
     <>
-      <Box bg={'#294747'} px={4}>
+      <Box bg={'#294747'} px={4} position="fixed" top="0" w="100%" zIndex="1">
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
@@ -111,11 +110,15 @@ export default function Header() {
                 cursor={'pointer'}
                 minW={0}
               >
-                <Avatar size={'sm'} src={userProfile?.avatar || ''} />
+                <Avatar
+                  bg={'transparent'}
+                  size={'sm'}
+                  src={userProfile?.avatar || ''}
+                />
               </MenuButton>
               <MenuList bg="#233433" w={'273px'} p={1}>
                 <Box>
-                  <Text fontSize="xs" ml={4} mt={2}>
+                  <Text fontSize="xs" ml={4} my={2}>
                     Currently logged as
                   </Text>
                   <Nav to="/profile">
@@ -126,7 +129,11 @@ export default function Header() {
                       }}
                       alignItems="center"
                     >
-                      <Avatar size={'sm'} src={userProfile?.avatar || ''} />
+                      <Avatar
+                        my={-2}
+                        size={'lg'}
+                        src={userProfile?.avatar || ''}
+                      />
                       <Flex ml={4} flexDirection="column">
                         <Text fontSize="sm">
                           @{userProfile?.username || ''}

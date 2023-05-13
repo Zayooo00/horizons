@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -12,22 +12,63 @@ import {
   Input,
   Button,
   Stack,
-  IconButton,
   Image,
+  HStack,
+  FormErrorMessage,
+  FormErrorIcon,
 } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { uploadUserInfo } from '../../services/profiles-service';
 import { getUserFromLocalStorage } from '../../context/AuthContext';
+import Validator from '../../helpers/Validator';
+import {
+  capitalizeFirstLetterAndLowercaseRest,
+  capitalizeFirstLetterOnly,
+  convertToLowercase,
+} from '../../helpers/Normalizer';
 
 export default function OnboardingModal() {
   const currentUserId = getUserFromLocalStorage();
-  const [username, setUsername] = useState('');
-  const [description, setDescription] = useState('');
+  const validator = Validator.getInstance();
+  const [isValid, setIsValid] = useState(false);
+  const [profile, setProfile] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    description: '',
+  });
   const [avatar, setAvatar] = useState(null);
   const [isOpen, setIsOpen] = useState(true);
+  const [errors, setErrors] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    description: '',
+    avatar: '',
+  });
   const fileInputRef = useRef();
+
+  useEffect(() => {
+    const isFormValid = () => {
+      return (
+        profile.firstName &&
+        profile.lastName &&
+        profile.username &&
+        profile.description &&
+        (avatar) &&
+        !Object.values(errors).some((error) => error.length > 0)
+      );
+    };
+    setIsValid(isFormValid());
+  }, [
+    profile.firstName,
+    profile.lastName,
+    profile.username,
+    profile.description,
+    (avatar),
+    errors,
+  ]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -42,79 +83,263 @@ export default function OnboardingModal() {
       await uploadBytes(storageRef, blob);
       downloadURL = await getDownloadURL(storageRef);
     }
-    uploadUserInfo(username, description, downloadURL, currentUserId);
+    uploadUserInfo(profile, downloadURL, currentUserId);
     setIsOpen(false);
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  function handleFirstNameChange(event) {
+    const { value } = event.target;
+
+    if (!validator.validateTextOnly(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        firstName: 'First name can only contain letters',
+      }));
+    } else if (!validator.validateMaxLength(value, 30)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        firstName: 'First name cannot be longer than 30 characters',
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, firstName: '' }));
+    }
+
+    const normalizedFirstName = capitalizeFirstLetterAndLowercaseRest(value);
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      firstName: normalizedFirstName,
+    }));
+  }
+
+  function handleLastNameChange(event) {
+    const { value } = event.target;
+
+    if (!validator.validateTextOnly(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        lastName: 'Last name can only contain letters',
+      }));
+    } else if (!validator.validateMaxLength(value, 30)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        lastName: 'Last name cannot be longer than 30 characters',
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, lastName: '' }));
+    }
+
+    const normalizedLastName = capitalizeFirstLetterAndLowercaseRest(value);
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      lastName: normalizedLastName,
+    }));
+  }
+
+  async function handleUsernameChange(event) {
+    const { value } = event.target;
+    let newError = '';
+
+    if (!validator.validateTextAndNumbersOnly(value)) {
+      newError = 'Username can only contain letters and numbers';
+    } else if (!validator.validateMaxLength(value, 15)) {
+      newError = 'Username cannot be longer than 15 characters';
+    } else if (value && !validator.validateNotOnlyNumbers(value)) {
+      newError = 'Username cannot contain only numbers';
+    }
+
+    setErrors((prevErrors) => ({ ...prevErrors, username: newError }));
+
+    const decapizalizedString = convertToLowercase(value);
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      username: decapizalizedString,
+    }));
+  }
+
+  async function handleAvatarChange(event) {
+    const avatar = event.target.files[0];
     const reader = new FileReader();
-    reader.onload = (e) => {
-      setAvatar(e.target.result);
-      console.log(e.target.result);
-    };
-    reader.readAsDataURL(file);
-  };
+
+    if (
+      !validator.validateFileType(avatar, [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+      ])
+    ) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        avatar: 'Avatar must be a JPEG, PNG, or GIF image',
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, avatar: '' }));
+
+      reader.onload = (e) => {
+        setAvatar(e.target.result);
+      };
+
+      reader.readAsDataURL(avatar);
+    }
+  }
+
+  function handleDescriptionChange(event) {
+    const { value } = event.target;
+
+    if (value && value.trim() === '') {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        description: 'Description section cannot contain only space characters',
+      }));
+    } else if (!validator.validateMaxLength(value, 255)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        description: 'Description section cannot be longer than 255 characters',
+      }));
+    } else if (value && !validator.validateNotOnlyNumbers(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        description:
+          'Description section cannot contain only numbers or only spaces and numbers',
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, description: '' }));
+    }
+
+    const normalizedDescription = capitalizeFirstLetterOnly(value);
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      description: normalizedDescription,
+    }));
+  }
 
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      closeOnOverlayClick={false}
+    >
       <ModalOverlay />
       <ModalContent p={2} mx={2} rounded={'1rem'} top={'20%'} bg={'#1c1e1f'}>
         <ModalHeader>Welcome to Horizons!</ModalHeader>
         <ModalBody>
           <Text mt={-2} mb={4}>
-            Fill up the additional info and let&apos;s get you started.
+            Fill up additional info and let&apos;s get you started.
           </Text>
-          <FormControl isRequired id="avatar">
-            <FormLabel>Avatar</FormLabel>
-            <Input
-              type="file"
-              onChange={handleFileChange}
-              accept="image/*"
-              ref={fileInputRef}
-              hidden
-            />
-            {avatar ? (
-              <Image src={avatar} boxSize="50px" borderRadius="full" />
-            ) : (
-              <IconButton
-                icon={<AddIcon />}
-                isRound
-                size="lg"
-                bg="transparent"
-                border="1px solid white"
-                onClick={() => {
-                  fileInputRef.current.click();
-                }}
+          <HStack spacing={4} alignItems="flex-start">
+            <FormControl
+              isRequired
+              w="sm"
+              id="firstName"
+              isInvalid={errors.firstName}
+            >
+              <FormLabel>First Name</FormLabel>
+              <Input
+                type="text"
+                value={profile.firstName}
+                onChange={(event) => handleFirstNameChange(event)}
               />
-            )}
-          </FormControl>
-          <FormControl isRequired id="username">
-            <FormLabel mt={2}>Username</FormLabel>
-            <Input
-              type="text"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-            />
-          </FormControl>
-          <FormControl isRequired id="description">
+              {errors.firstName && (
+                <FormErrorMessage>
+                  <FormErrorIcon />
+                  {errors.firstName}
+                </FormErrorMessage>
+              )}
+            </FormControl>
+            <FormControl
+              isRequired
+              w="sm"
+              id="lastName"
+              isInvalid={errors.lastName}
+            >
+              <FormLabel>Last Name</FormLabel>
+              <Input
+                type="text"
+                value={profile.lastName}
+                onChange={(event) => handleLastNameChange(event)}
+              />
+              {errors.lastName && (
+                <FormErrorMessage>
+                  <FormErrorIcon />
+                  {errors.lastName}
+                </FormErrorMessage>
+              )}
+            </FormControl>
+          </HStack>
+          <HStack spacing={4} alignItems="flex-start">
+            <FormControl isRequired id="username" isInvalid={errors.username}>
+              <FormLabel mt={2}>Username</FormLabel>
+              <Input
+                type="text"
+                value={profile.username}
+                onChange={(event) => handleUsernameChange(event)}
+              />{' '}
+              {errors.username && (
+                <FormErrorMessage>
+                  <FormErrorIcon />
+                  {errors.username}
+                </FormErrorMessage>
+              )}
+            </FormControl>
+            <FormControl isRequired id="avatar" isInvalid={errors.avatar}>
+              <FormLabel mt={2}>Avatar</FormLabel>
+              <Input
+                type="file"
+                onChange={(event) => handleAvatarChange(event)}
+                ref={fileInputRef}
+                hidden
+              />
+              <HStack alignItems="center" h={10}>
+                <Button
+                  size="xs"
+                  color={'black'}
+                  onClick={() => {
+                    fileInputRef.current.click();
+                  }}
+                >
+                  {avatar ? 'Uploaded!' : 'Choose File'}
+                </Button>
+                {errors.avatar && (
+                  <FormErrorMessage>
+                    <FormErrorIcon />
+                    {errors.avatar}
+                  </FormErrorMessage>
+                )}
+                {avatar && (
+                  <Image src={avatar} boxSize="50px" borderRadius="full" />
+                )}
+              </HStack>
+            </FormControl>
+          </HStack>
+          <FormControl
+            isRequired
+            id="description"
+            isInvalid={errors.description}
+          >
             <FormLabel mt={2}>Description</FormLabel>
             <Textarea
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
+              value={profile.description}
+              onChange={(event) => handleDescriptionChange(event)}
               _placeholder={{ color: 'gray' }}
               borderColor="gray"
               placeholder="Say something about youself."
               size="sm"
             />
+            {errors.description && (
+              <FormErrorMessage>
+                <FormErrorIcon />
+                {errors.description}
+              </FormErrorMessage>
+            )}
           </FormControl>
           <Stack spacing={10} mt={3}>
             <Button
               onClick={handleSubmit}
-              color="black"
+              isDisabled={!isValid}
+              color="white"
+              bg="#294747"
               size="md"
               _hover={{
-                bg: 'yellow.500',
+                bg: '#1a2e2e',
               }}
             >
               Submit
