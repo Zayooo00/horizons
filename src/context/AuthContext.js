@@ -47,7 +47,6 @@ export function AuthContextProvider({ children }) {
             emailAddress: currentUser.email.toLowerCase(),
             dateCreated: currentUser.metadata.creationTime,
           });
-          console.log(currentUser)
           navigate('/dashboard');
         }
       }

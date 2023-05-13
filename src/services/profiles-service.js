@@ -10,19 +10,13 @@ export async function checkIfUserDocExists(currentUserId) {
   return userDocSnap.exists();
 }
 
-export async function uploadUserInfo(
-  username,
-  description,
-  avatar,
-  currentUserId
-) {
+export async function uploadUserInfo(profile, avatar, currentUserId) {
   const userDocRef = doc(profilesCollection, currentUserId);
   await setDoc(userDocRef, {
-    username,
-    description,
-    avatar,
+  ...profile,
+  avatar,
   });
-}
+ }
 
 export async function fetchUserProfile(currentUserId) {
   const userDocRef = doc(profilesCollection, currentUserId);

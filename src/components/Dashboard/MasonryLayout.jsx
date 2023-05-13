@@ -8,7 +8,7 @@ export default function MasonryLayout({ children }) {
   return (
     <Box
       mx={'6vw'}
-      mt={4}
+      mt={20}
       className="masonry"
       sx={{
         columnCount: 6,

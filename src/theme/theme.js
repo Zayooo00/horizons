@@ -8,14 +8,36 @@ const theme = extendTheme({
       },
     },
   },
+
   palette: {
     primary: '#1a2023',
     secondary: '#1c1e1f',
     accent: '#d4af37',
   },
+
   fonts: {
     heading: '\'Poppins\', sans-serif',
     body: '\'Poppins\', sans-serif',
   },
-});
+
+  components: {
+    Input: {
+      defaultProps: {
+        focusBorderColor: '#294747',
+      },
+      variants: {
+        outline: {
+          field: {
+            borderColor: 'grey',
+          },
+        },
+      },
+    },
+
+    Textarea: {
+      defaultProps: {
+        focusBorderColor: '#294747',
+      },
+    },
+}});
 export default theme;

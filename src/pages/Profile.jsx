@@ -1,12 +1,13 @@
 import React from 'react';
 
+import ProfilePanel from '../components/Profile/ProfilePanel';
 import Headbar from '../components/Headbar';
 
-export default function Create() {
+export default function Profile() {
   return (
     <>
       <Headbar />
-      <div>Generate</div>
+      <ProfilePanel />
     </>
   );
 }
