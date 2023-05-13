@@ -5,8 +5,12 @@ import PropTypes from 'prop-types';
 import { UserAuth } from '../context/AuthContext.js';
 
 export default function AuthRoute({ children }) {
-  const { user } = UserAuth();
+  const { user, initializing } = UserAuth();
   const location = useLocation();
+
+  if (initializing) {
+    return null;
+  }
 
   if (
     user &&

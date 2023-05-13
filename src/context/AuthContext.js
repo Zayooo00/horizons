@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -18,28 +25,29 @@ const AuthContext = createContext();
 export function AuthContextProvider({ children }) {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [initializing, setInitializing] = useState(true);
 
-  const createUser = (email, password) => {
+  const createUser = useCallback((email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
-  };
+  }, []);
 
-  const signIn = (email, password) => {
+  const signIn = useCallback((email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
-  };
+  }, []);
 
-  const googleSignIn = () => {
+  const googleSignIn = useCallback(() => {
     const GoogleProvider = new GoogleAuthProvider();
-    window.sessionStorage.setItem('pending', 1);
     signInWithPopup(auth, GoogleProvider);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     return signOut(auth);
-  };
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      setInitializing(false);
 
       if (currentUser) {
         localStorage.setItem('user', JSON.stringify(currentUser.uid));
@@ -62,12 +70,13 @@ export function AuthContextProvider({ children }) {
   const value = useMemo(
     () => ({
       user,
+      initializing,
       createUser,
       logout,
       signIn,
       googleSignIn,
     }),
-    [user, createUser, logout, signIn, googleSignIn]
+    [user, initializing, createUser, logout, signIn, googleSignIn]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

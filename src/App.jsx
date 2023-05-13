@@ -15,7 +15,7 @@ import Dashboard from './pages/Dashboard';
 import Create from './pages/Create';
 import Profile from './pages/Profile';
 
-function App() {
+export default function App() {
   return (
     <ChakraProvider theme={theme}>
       <Box bg={theme.palette.primary}>
@@ -77,5 +77,3 @@ function App() {
     </ChakraProvider>
   );
 }
-
-export default App;
