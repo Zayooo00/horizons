@@ -12,17 +12,17 @@ import {
 import Headbar from '../components/Headbar';
 
 export default function ImageGenerationForm() {
-  const [loading, setLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [isImageLoading, setIsImageLoading] = useState(false);
+  const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
-  const [output, setOutput] = useState(null);
 
   const handleSubmit = async (event, form) => {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
-
     const input = form.elements.input.value;
     const timestamp = Date.now();
+    event.preventDefault();
+    setIsImageLoading(true);
+
     try {
       const response = await fetch(process.env.REACT_APP_HUGGINGFACE_API_URL, {
         method: 'POST',
@@ -38,11 +38,11 @@ export default function ImageGenerationForm() {
       }
 
       const blob = await response.blob();
-      setOutput(URL.createObjectURL(blob));
+      setImage(URL.createObjectURL(blob));
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setIsImageLoading(false);
     }
   };
 
@@ -63,23 +63,26 @@ export default function ImageGenerationForm() {
             mb={{ base: 2, md: 0 }}
             minHeight={{ base: '100px', md: 'auto' }}
             maxHeight={{ base: '100px', md: '600px' }}
+            overflow={{ base: 'auto', md: 'hidden' }}
             resize="none"
             rows={1}
+            onChange={(event) => setInputValue(event.target.value)}
             onInput={(e) => {
               e.target.style.height = 'auto';
               e.target.style.height = e.target.scrollHeight + 'px';
             }}
             onKeyPress={(event) => {
-              if (event.key === 'Enter') {
+              if (event.key === 'Enter' && inputValue.trim() !== '') {
                 handleSubmit(event, event.currentTarget.form);
               }
             }}
-            overflow={{ base: 'auto', md: 'hidden' }}
           />
           <Button
+            isDisabled={!inputValue || !inputValue.trim()}
             fontSize="sm"
             fontWeight={200}
-            mt={'-1.5px'}
+            h={'38px'}
+            mt={'00.5px'}
             ml={{ base: 0, md: 2 }}
             w={{ base: 'full', md: 'auto' }}
             type="submit"
@@ -88,7 +91,7 @@ export default function ImageGenerationForm() {
               bg: '#3b5655',
             }}
           >
-            {loading ? <Spinner speed="0.9s" /> : 'Generate'}
+            {isImageLoading ? <Spinner speed="0.9s" /> : 'Generate'}
           </Button>
         </Flex>
         {error && (
@@ -96,9 +99,9 @@ export default function ImageGenerationForm() {
             <Text color={'red.600'}>{error}</Text>
           </Flex>
         )}
-        {!loading && output && (
+        {!isImageLoading && image && (
           <Flex justifyContent="center" mt={4} mx={4}>
-            <Image src={output} alt="Generated image" maxW={'400px'} />
+            <Image src={image} alt="Generated image" maxW={'400px'} />
           </Flex>
         )}
       </Box>
