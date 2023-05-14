@@ -13,6 +13,7 @@ import {
 import { DownloadIcon } from '@chakra-ui/icons';
 
 import Headbar from '../components/Headbar';
+import LoadingBar from '../components/Create/LoadingBar';
 
 export default function ImageGenerationForm() {
   const [inputValue, setInputValue] = useState('');
@@ -70,7 +71,7 @@ export default function ImageGenerationForm() {
             name="input"
             color="white"
             _placeholder={{ color: 'gray' }}
-            placeholder="Magnificent cat in a witch cat on the moon..."
+            placeholder="Magnificent cat in a witch hat on the moon..."
             mb={{ base: 2, md: 0 }}
             minHeight={{ base: '100px', md: 'auto' }}
             maxHeight={{ base: '100px', md: '600px' }}
@@ -110,6 +111,7 @@ export default function ImageGenerationForm() {
             <Text color={'red.600'}>{error}</Text>
           </Flex>
         )}
+        {isImageLoading && <LoadingBar />}
         {!isImageLoading && images.length > 0 && (
           <SimpleGrid
             columns={{ base: 2, md: 4 }}
