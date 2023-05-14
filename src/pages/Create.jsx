@@ -10,14 +10,16 @@ import {
   IconButton,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { DownloadIcon } from '@chakra-ui/icons';
+import { DownloadIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 
 import Headbar from '../components/Headbar';
 import LoadingBar from '../components/Create/LoadingBar';
+import ShareModal from '../components/Create/ShareModal';
 
 export default function ImageGenerationForm() {
   const [inputValue, setInputValue] = useState('');
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [error, setError] = useState(null);
   const [images, setImages] = useState([]);
 
@@ -56,6 +58,14 @@ export default function ImageGenerationForm() {
     } finally {
       setIsImageLoading(false);
     }
+  };
+
+  const handleShare = () => {
+    setIsShareModalOpen(true);
+  };
+
+  const handleShareModalClose = () => {
+    setIsShareModalOpen(false);
   };
 
   return (
@@ -105,6 +115,12 @@ export default function ImageGenerationForm() {
           >
             {isImageLoading ? <Spinner speed="0.9s" /> : 'Generate'}
           </Button>
+          <ShareModal
+            isOpen={isShareModalOpen}
+            onClose={handleShareModalClose}
+            image={images[0]}
+            prompt={inputValue}
+          />
         </Flex>
         {error && (
           <Flex justifyContent="center" mt={4} mx={4}>
@@ -144,6 +160,17 @@ export default function ImageGenerationForm() {
                       link.download = inputValue;
                       link.click();
                     }}
+                  />
+                  <IconButton
+                    size="md"
+                    bg="white"
+                    color="black"
+                    position="absolute"
+                    top={2}
+                    right={14}
+                    aria-label="Share image"
+                    icon={<ExternalLinkIcon />}
+                    onClick={handleShare}
                   />
                 </Box>
               </Box>
