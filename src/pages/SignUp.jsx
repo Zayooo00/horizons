@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import Navbar from '../components/Navbar';
-import signup from '../assets/images/signup.png'
+import signup from '../assets/images/signup.png';
 
 export default function Login() {
   return (

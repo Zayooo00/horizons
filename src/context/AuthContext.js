@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -9,44 +16,49 @@ import {
 } from 'firebase/auth';
 import { setDoc, doc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import { auth, db } from '../firebase/firebase';
-import React from 'react';
 
 const AuthContext = createContext();
 
-// eslint-disable-next-line react/prop-types
 export function AuthContextProvider({ children }) {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const createUser = (email, password) => {
+  const [initializing, setInitializing] = useState(true);
+
+  const createUser = useCallback((email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
-  };
+  }, []);
 
-  const signIn = (email, password) => {
+  const signIn = useCallback((email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
-  };
+  }, []);
 
-  const googleSignIn = () => {
+  const googleSignIn = useCallback(() => {
     const GoogleProvider = new GoogleAuthProvider();
-    window.sessionStorage.setItem('pending', 1);
     signInWithPopup(auth, GoogleProvider);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     return signOut(auth);
-  };
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      setInitializing(false);
+
       if (currentUser) {
         localStorage.setItem('user', JSON.stringify(currentUser.uid));
         const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+
         if (!userDoc.exists()) {
           await setDoc(doc(db, 'users', currentUser.uid), {
             emailAddress: currentUser.email.toLowerCase(),
             dateCreated: currentUser.metadata.creationTime,
           });
+
           navigate('/dashboard');
         }
       }
@@ -55,20 +67,19 @@ export function AuthContextProvider({ children }) {
     return unsubscribe;
   }, [navigate]);
 
-  return (
-    <AuthContext.Provider
-      // eslint-disable-next-line react/jsx-no-constructed-context-values
-      value={{
-        user,
-        createUser,
-        logout,
-        signIn,
-        googleSignIn,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      initializing,
+      createUser,
+      logout,
+      signIn,
+      googleSignIn,
+    }),
+    [user, initializing, createUser, logout, signIn, googleSignIn]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export const UserAuth = () => {
@@ -78,4 +89,8 @@ export const UserAuth = () => {
 export const getUserFromLocalStorage = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   return user;
+};
+
+AuthContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

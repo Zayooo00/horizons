@@ -32,6 +32,7 @@ export default function OnboardingModal() {
   const currentUserId = getUserFromLocalStorage();
   const validator = Validator.getInstance();
   const [isValid, setIsValid] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [profile, setProfile] = useState({
     firstName: '',
     lastName: '',
@@ -39,7 +40,6 @@ export default function OnboardingModal() {
     description: '',
   });
   const [avatar, setAvatar] = useState(null);
-  const [isOpen, setIsOpen] = useState(true);
   const [errors, setErrors] = useState({
     firstName: '',
     lastName: '',
@@ -56,7 +56,7 @@ export default function OnboardingModal() {
         profile.lastName &&
         profile.username &&
         profile.description &&
-        (avatar) &&
+        avatar &&
         !Object.values(errors).some((error) => error.length > 0)
       );
     };
@@ -66,7 +66,7 @@ export default function OnboardingModal() {
     profile.lastName,
     profile.username,
     profile.description,
-    (avatar),
+    avatar,
     errors,
   ]);
 

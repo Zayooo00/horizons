@@ -5,7 +5,11 @@ import PropTypes from 'prop-types';
 import { UserAuth } from '../context/AuthContext';
 
 export default function ProtectedRoute({ children }) {
-  const { user } = UserAuth();
+  const { user, initializing } = UserAuth();
+
+  if (initializing) {
+    return null;
+  }
 
   if (!user) {
     return <Navigate to="/" />;

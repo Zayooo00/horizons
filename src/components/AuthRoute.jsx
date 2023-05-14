@@ -5,10 +5,19 @@ import PropTypes from 'prop-types';
 import { UserAuth } from '../context/AuthContext.js';
 
 export default function AuthRoute({ children }) {
-  const { user } = UserAuth();
+  const { user, initializing } = UserAuth();
   const location = useLocation();
 
-  if (user && (location.pathname === '/' || location.pathname === '/login'|| location.pathname === '/signup')) {
+  if (initializing) {
+    return null;
+  }
+
+  if (
+    user &&
+    (location.pathname === '/' ||
+      location.pathname === '/login' ||
+      location.pathname === '/signup')
+  ) {
     return <Navigate to="/dashboard" />;
   }
   return children;

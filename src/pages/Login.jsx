@@ -98,7 +98,7 @@ export default function Login() {
                   color={'black'}
                   variant={'solid'}
                 >
-          {isAuthLoading ? <Spinner size={'sm'} /> : 'Log in'}
+                  {isAuthLoading ? <Spinner size={'sm'} /> : 'Log in'}
                 </Button>
               </Stack>
               <Stack>
