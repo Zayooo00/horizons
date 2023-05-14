@@ -7,15 +7,18 @@ import {
   Image,
   Flex,
   Text,
+  IconButton,
+  SimpleGrid,
 } from '@chakra-ui/react';
+import { DownloadIcon } from '@chakra-ui/icons';
 
 import Headbar from '../components/Headbar';
 
 export default function ImageGenerationForm() {
   const [inputValue, setInputValue] = useState('');
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
+  const [images, setImages] = useState([]);
 
   const handleSubmit = async (event, form) => {
     const input = form.elements.input.value;
@@ -24,21 +27,29 @@ export default function ImageGenerationForm() {
     setIsImageLoading(true);
 
     try {
-      const response = await fetch(process.env.REACT_APP_HUGGINGFACE_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.REACT_APP_HUGGINGFACE_API_TOKEN}`,
-        },
-        body: JSON.stringify({ inputs: input, timestamp }),
-      });
+      const responses = await Promise.all(
+        Array(4)
+          .fill()
+          .map(() =>
+            fetch(process.env.REACT_APP_HUGGINGFACE_API_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${process.env.REACT_APP_HUGGINGFACE_API_TOKEN}`,
+              },
+              body: JSON.stringify({ inputs: input, timestamp }),
+            })
+          )
+      );
 
-      if (!response.ok) {
-        throw new Error('Failed to generate the image :(');
+      if (responses.some((response) => !response.ok)) {
+        throw new Error('Failed to generate the images :(');
       }
 
-      const blob = await response.blob();
-      setImage(URL.createObjectURL(blob));
+      const blobs = await Promise.all(
+        responses.map((response) => response.blob())
+      );
+      setImages(blobs.map((blob) => URL.createObjectURL(blob)));
     } catch (error) {
       setError(error.message);
     } finally {
@@ -99,10 +110,43 @@ export default function ImageGenerationForm() {
             <Text color={'red.600'}>{error}</Text>
           </Flex>
         )}
-        {!isImageLoading && image && (
-          <Flex justifyContent="center" mt={4} mx={4}>
-            <Image src={image} alt="Generated image" maxW={'400px'} />
-          </Flex>
+        {!isImageLoading && images.length > 0 && (
+          <SimpleGrid
+            columns={{ base: 2, md: 4 }}
+            spacing={4}
+            justifyContent="center"
+            mt={8}
+            mx={{ base: 4, sm: 4, md: 4, lg: 4, xl: 60 }}
+          >
+            {images.map((image) => (
+              <Box position="relative" key={image.id}>
+                <Box
+                  transition="transform 0.2s ease-in-out"
+                  _hover={{
+                    transform: 'scale(0.9)',
+                  }}
+                >
+                  <Image src={image} alt="Generated image" maxW={'400px'} />
+                  <IconButton
+                    size="md"
+                    bg="white"
+                    color="black"
+                    position="absolute"
+                    top={2}
+                    right={2}
+                    aria-label="Download image"
+                    icon={<DownloadIcon />}
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = image;
+                      link.download = inputValue;
+                      link.click();
+                    }}
+                  />
+                </Box>
+              </Box>
+            ))}
+          </SimpleGrid>
         )}
       </Box>
     </>
