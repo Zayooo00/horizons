@@ -16,7 +16,7 @@ export async function uploadUserInfo(profile, avatar, currentUserId) {
     ...profile,
     avatar,
   });
-}
+ }
 
 export async function fetchUserProfile(currentUserId) {
   const userDocRef = doc(profilesCollection, currentUserId);

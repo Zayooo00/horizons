@@ -40,5 +40,25 @@ const theme = extendTheme({
       },
     },
   },
-});
+
+  components: {
+    Input: {
+      defaultProps: {
+        focusBorderColor: '#294747',
+      },
+      variants: {
+        outline: {
+          field: {
+            borderColor: 'grey',
+          },
+        },
+      },
+    },
+
+    Textarea: {
+      defaultProps: {
+        focusBorderColor: '#294747',
+      },
+    },
+}});
 export default theme;
