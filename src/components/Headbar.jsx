@@ -20,6 +20,7 @@ import {
 import { Link as Nav } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
+import PropTypes from 'prop-types';
 
 import { UserAuth } from '../context/AuthContext';
 import { fetchUserProfile } from '../services/profiles-service';
@@ -31,7 +32,6 @@ const links = [
   { text: 'Create', to: '/create' },
 ];
 
-// eslint-disable-next-line react/prop-types
 const NavLink = ({ children, to }) => (
   <Link
     as={Nav}
@@ -198,3 +198,8 @@ export default function Headbar() {
     </>
   );
 }
+
+NavLink.propTypes = {
+  children: PropTypes.node.isRequired,
+  to: PropTypes.string.isRequired,
+};
