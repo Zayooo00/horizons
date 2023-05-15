@@ -40,8 +40,11 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
 
     const downloadURL = await getDownloadURL(storageRef);
 
-    setPost((prevPost) => ({ ...prevPost, image: downloadURL }));
-    createPost(post, currentUserId);
+    setPost((prevPost) => ({
+      ...prevPost,
+      image: downloadURL,
+    }));
+    createPost({ ...post, image: downloadURL, prompt: prompt }, currentUserId);
     onClose();
     setPost({
       title: '',
