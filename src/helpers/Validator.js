@@ -24,13 +24,17 @@ export default class Validator {
     };
 
     this.validateTextOnly = function validateTextOnly(value) {
-      return /^[a-zA-Z]*$/.test(value);
+      return /^[a-zA-Z\u0104\u0105\u0106\u0107\u0118\u0119\u0141\u0142\u0143\u0144\u00D3\u00F3\u015A\u015B\u0179\u017A\u017B\u017C]*$/.test(
+        value
+      );
     };
 
     this.validateTextAndNumbersOnly = function validateTextAndNumbersOnly(
       value
     ) {
-      return /^[a-zA-Z0-9]*$/.test(value);
+      return /^[a-zA-Z0-9\u0104\u0105\u0106\u0107\u0118\u0119\u0141\u0142\u0143\u0144\u00D3\u00F3\u015A\u015B\u0179\u017A\u017B\u017C]*$/.test(
+        value
+      );
     };
 
     this.validateNotOnlyNumbers = function alidateNotOnlyNumbers(value) {
