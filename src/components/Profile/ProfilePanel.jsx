@@ -175,33 +175,6 @@ export default function ProfilePanel() {
               <CardBody px="5px">
                 <Flex direction="column">
                   <Flex align="center" mb="18px">
-                    <Text fontSize="md" color={textColor} me="10px">
-                      First name:{' '}
-                    </Text>
-                    <Text fontSize="md" color="gray.400" fontWeight="400">
-                      {profileData.firstName}
-                    </Text>
-                  </Flex>
-                  <Flex align="center" mb="18px">
-                    <Text fontSize="md" color={textColor} me="10px">
-                      Last name:{' '}
-                    </Text>
-                    <Text fontSize="md" color="gray.400" fontWeight="400">
-                      {profileData.lastName}
-                    </Text>
-                  </Flex>
-                  <Flex align="center" mb="18px">
-                    <Text fontSize="md" color={textColor} me="10px">
-                      Username:{' '}
-                    </Text>
-                    <Text fontSize="md" color="gray.400" fontWeight="400">
-                      {profileData.username}
-                    </Text>
-                  </Flex>
-                  <Flex align="center" mb="18px">
-                    <Text fontSize="md" color={textColor} me="10px">
-                      Description:{' '}
-                    </Text>
                     <Text fontSize="md" color="gray.400" fontWeight="400">
                       {profileData.description}
                     </Text>
