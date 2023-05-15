@@ -8,6 +8,7 @@ import {
   Center,
   useColorMode,
   useColorModeValue,
+  Image,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -15,6 +16,7 @@ import { FaPenFancy } from 'react-icons/fa';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
 import { fetchUserProfile } from '../../services/profiles-service';
+import { getUserPosts } from '../../services/posts-service';
 import { UserAuth, getUserFromLocalStorage } from '../../context/AuthContext';
 import Headbar from '../Headbar';
 import Card from './ProfileCards/Card';
@@ -27,6 +29,7 @@ export default function ProfilePanel() {
   const navigate = useNavigate();
   const headerColor = useColorModeValue('gray.700', 'white');
   const textColor = useColorModeValue('white', 'white');
+  const [userPosts, setUserPosts] = useState([]);
   const [profileData, setProfileData] = useState({
     firstName: '',
     lastName: '',
@@ -46,6 +49,8 @@ export default function ProfilePanel() {
       if (userData) {
         setProfileData(userData);
       }
+      const postsData = await getUserPosts(currentUserId);
+      setUserPosts(postsData);
     }
     fetchData();
   }, []);
@@ -215,8 +220,20 @@ export default function ProfilePanel() {
                   Gallery
                 </Text>
               </CardHeader>
-              <CardBody px="5px">
-                <Flex direction="column"></Flex>
+              <CardBody px={2}>
+                <Grid
+                  templateColumns={{
+                    base: 'repeat(2, 1fr)',
+                    sm: 'repeat(2, 1fr)',
+                    md: 'repeat(3, 1fr)',
+                    lg: 'repeat(4, 1fr)',
+                  }}
+                  gap={6}
+                >
+                  {userPosts.map((post) => (
+                    <Image key={post.id} src={post.image} />
+                  ))}
+                </Grid>
               </CardBody>
             </Card>
           </Grid>
