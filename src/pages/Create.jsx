@@ -10,13 +10,17 @@ import {
   IconButton,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { DownloadIcon } from '@chakra-ui/icons';
+import { DownloadIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 
 import Headbar from '../components/Headbar';
+import LoadingBar from '../components/Create/LoadingBar';
+import ShareModal from '../components/Create/ShareModal';
 
 export default function ImageGenerationForm() {
   const [inputValue, setInputValue] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [error, setError] = useState(null);
   const [images, setImages] = useState([]);
 
@@ -43,18 +47,29 @@ export default function ImageGenerationForm() {
       );
 
       if (responses.some((response) => !response.ok)) {
-        throw new Error('Failed to generate the images :(');
+        const response = responses.find((response) => !response.ok);
+        const errorData = await response.json();
+        throw new Error(errorData.error);
       }
 
       const blobs = await Promise.all(
         responses.map((response) => response.blob())
       );
       setImages(blobs.map((blob) => URL.createObjectURL(blob)));
+      setError(null);
     } catch (error) {
       setError(error.message);
     } finally {
       setIsImageLoading(false);
     }
+  };
+
+  const handleShare = () => {
+    setIsShareModalOpen(true);
+  };
+
+  const handleShareModalClose = () => {
+    setIsShareModalOpen(false);
   };
 
   return (
@@ -70,7 +85,7 @@ export default function ImageGenerationForm() {
             name="input"
             color="white"
             _placeholder={{ color: 'gray' }}
-            placeholder="Magnificent cat in a witch cat on the moon..."
+            placeholder="Magnificent cat in a witch hat on the moon..."
             mb={{ base: 2, md: 0 }}
             minHeight={{ base: '100px', md: 'auto' }}
             maxHeight={{ base: '100px', md: '600px' }}
@@ -110,6 +125,7 @@ export default function ImageGenerationForm() {
             <Text color={'red.600'}>{error}</Text>
           </Flex>
         )}
+        {isImageLoading && <LoadingBar />}
         {!isImageLoading && images.length > 0 && (
           <SimpleGrid
             columns={{ base: 2, md: 4 }}
@@ -143,12 +159,32 @@ export default function ImageGenerationForm() {
                       link.click();
                     }}
                   />
+                  <IconButton
+                    size="md"
+                    bg="white"
+                    color="black"
+                    position="absolute"
+                    top={2}
+                    right={14}
+                    aria-label="Share image"
+                    icon={<ExternalLinkIcon />}
+                    onClick={() => {
+                      setSelectedImage(image);
+                      handleShare();
+                    }}
+                  />
                 </Box>
               </Box>
             ))}
           </SimpleGrid>
         )}
       </Box>
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={handleShareModalClose}
+        image={selectedImage}
+        prompt={inputValue}
+      />
     </>
   );
 }
