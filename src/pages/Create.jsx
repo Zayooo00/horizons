@@ -10,7 +10,8 @@ import {
   IconButton,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { DownloadIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+import { DownloadIcon } from '@chakra-ui/icons';
+import { BiShareAlt } from 'react-icons/bi';
 
 import Headbar from '../components/Headbar';
 import LoadingBar from '../components/Create/LoadingBar';
@@ -29,6 +30,7 @@ export default function ImageGenerationForm() {
     const timestamp = Date.now();
     event.preventDefault();
     setIsImageLoading(true);
+    setError(null);
 
     try {
       const responses = await Promise.all(
@@ -161,13 +163,14 @@ export default function ImageGenerationForm() {
                   />
                   <IconButton
                     size="md"
+                    fontSize={18}
                     bg="white"
                     color="black"
                     position="absolute"
                     top={2}
                     right={14}
                     aria-label="Share image"
-                    icon={<ExternalLinkIcon />}
+                    icon={<BiShareAlt />}
                     onClick={() => {
                       setSelectedImage(image);
                       handleShare();
