@@ -27,6 +27,8 @@ export default function Login() {
 
   const ERROR_INVALID_EMAIL = 'auth/invalid-email';
   const ERROR_WRONG_PASSWORD = 'auth/wrong-password';
+  const ERROR_USER_NOT_FOUND = 'auth/user-not-found';
+  const ERROR_NETWORK_REQUEST_FAILED = 'network-request-failed';
 
   const handleGoogleSignIn = async () => {
     await googleSignIn();
@@ -47,6 +49,10 @@ export default function Login() {
         errorCode === ERROR_WRONG_PASSWORD
       ) {
         setAuthError('The email address or password you entered is invalid.');
+      } else if (errorCode === ERROR_USER_NOT_FOUND) {
+        setAuthError('The email address you entered was not found.');
+      } else if (errorCode === ERROR_NETWORK_REQUEST_FAILED) {
+        setAuthError('No network, check your connection and try again.');
       }
       setIsAuthLoading(false);
     }
