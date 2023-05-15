@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from 'react';
 import {
   Button,
@@ -15,12 +14,15 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import PropTypes from 'prop-types';
 
 import { getUserFromLocalStorage } from '../../context/AuthContext';
 import { createPost } from '../../services/posts-service';
 
 export default function ShareModal({ isOpen, onClose, image, prompt }) {
+  console.log('ShareModal image prop:', image);
   const currentUserId = getUserFromLocalStorage();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState({
     title: '',
     author: currentUserId,
@@ -31,6 +33,7 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
     const storage = getStorage();
     const response = await fetch(image);
     const imageData = await response.blob();
@@ -45,6 +48,7 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
       image: downloadURL,
     }));
     createPost({ ...post, image: downloadURL, prompt: prompt }, currentUserId);
+    setIsSubmitting(false);
     onClose();
     setPost({
       title: '',
@@ -83,12 +87,19 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
                 name="description"
                 value={post.description}
                 onChange={handleChange}
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter' && post.title.trim() !== '') {
+                    handleSubmit(event, event.currentTarget.form);
+                  }
+                }}
               />
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
             <Button
+              isLoading={isSubmitting}
+              isDisabled={!post.title}
               w={'50%'}
               type="submit"
               mr={3}
@@ -120,3 +131,10 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
     </Modal>
   );
 }
+
+ShareModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  image: PropTypes.string.isRequired,
+  prompt: PropTypes.string.isRequired,
+};

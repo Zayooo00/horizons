@@ -18,6 +18,7 @@ import ShareModal from '../components/Create/ShareModal';
 
 export default function ImageGenerationForm() {
   const [inputValue, setInputValue] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [error, setError] = useState(null);
@@ -46,13 +47,16 @@ export default function ImageGenerationForm() {
       );
 
       if (responses.some((response) => !response.ok)) {
-        throw new Error('Failed to generate the images :(');
+        const response = responses.find((response) => !response.ok);
+        const errorData = await response.json();
+        throw new Error(`Failed to generate the images, ${errorData.error}`);
       }
 
       const blobs = await Promise.all(
         responses.map((response) => response.blob())
       );
       setImages(blobs.map((blob) => URL.createObjectURL(blob)));
+      setError(null);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -115,12 +119,6 @@ export default function ImageGenerationForm() {
           >
             {isImageLoading ? <Spinner speed="0.9s" /> : 'Generate'}
           </Button>
-          <ShareModal
-            isOpen={isShareModalOpen}
-            onClose={handleShareModalClose}
-            image={images[0]}
-            prompt={inputValue}
-          />
         </Flex>
         {error && (
           <Flex justifyContent="center" mt={4} mx={4}>
@@ -170,7 +168,10 @@ export default function ImageGenerationForm() {
                     right={14}
                     aria-label="Share image"
                     icon={<ExternalLinkIcon />}
-                    onClick={handleShare}
+                    onClick={() => {
+                      setSelectedImage(image);
+                      handleShare();
+                    }}
                   />
                 </Box>
               </Box>
@@ -178,6 +179,12 @@ export default function ImageGenerationForm() {
           </SimpleGrid>
         )}
       </Box>
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={handleShareModalClose}
+        image={selectedImage}
+        prompt={inputValue}
+      />
     </>
   );
 }
