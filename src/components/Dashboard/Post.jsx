@@ -28,10 +28,10 @@ export default function Post({ post }) {
           justifyContent="flex-end"
           alignItems="flex-start"
         >
-          <Box w={'90%'} isTruncated fontSize="lg" ml={4}>
+          <Box w={'90%'} isTruncated fontSize="sm" ml={4}>
             {post.title}
           </Box>
-          <Text w={'90%'} isTruncated fontSize="sm" ml={4} mb={4}>
+          <Text w={'90%'} isTruncated fontSize="xs" ml={4} mb={4}>
             {post.prompt}
           </Text>
         </Box>
