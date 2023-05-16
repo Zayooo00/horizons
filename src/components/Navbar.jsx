@@ -52,8 +52,10 @@ export default function Navbar() {
               <Button
                 fontWeight={'light'}
                 background={'transparent'}
+                transition="transform 0.2s ease-in-out"
                 _hover={{
                   bg: 'transparent',
+                  transform: 'scale(1.05)',
                 }}
                 mr={4}
                 display={{ base: 'none', sm: 'inline-flex' }}
@@ -66,8 +68,10 @@ export default function Navbar() {
               <Button
                 fontWeight={'light'}
                 background={'transparent'}
+                transition="transform 0.2s ease-in-out"
                 _hover={{
                   bg: 'transparent',
+                  transform: 'scale(1.05)',
                 }}
                 color="white"
                 display={{ base: 'none', sm: 'inline-flex' }}
@@ -93,7 +97,6 @@ export default function Navbar() {
           </Flex>
         </Flex>
       </Box>
-
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={'md'}>
         <DrawerOverlay />
         <DrawerContent bg={'gray.900'}>
@@ -114,15 +117,33 @@ export default function Navbar() {
               </Flex>
             </Link>
           </DrawerHeader>
-
           <DrawerBody mt={4}>
             <Link to="/login">
-              <Button fontWeight={'light'} colorScheme="teal" w="100%" mb={4}>
+              <Button
+                fontWeight={'bold'}
+                bg="#d4e45d"
+                color="black"
+                w="100%"
+                mb={4}
+                transition="transform 0.2s ease-in-out"
+                _hover={{
+                  transform: 'scale(0.95)',
+                }}
+              >
                 Log in
               </Button>
             </Link>
             <Link to="/sign-up">
-              <Button fontWeight={'light'} colorScheme="teal" w="100%">
+              <Button
+                fontWeight={'bold'}
+                bg="#f47533"
+                color="black"
+                w="100%"
+                transition="transform 0.2s ease-in-out"
+                _hover={{
+                  transform: 'scale(0.95)',
+                }}
+              >
                 Sign up
               </Button>
             </Link>
