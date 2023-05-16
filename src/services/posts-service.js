@@ -7,13 +7,17 @@ import {
   where,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import { v4 as uuidv4 } from 'uuid';
 
 const postsCollection = collection(db, 'posts');
 
 export async function createPost(post) {
-  const userDocRef = doc(postsCollection);
+  const postId = uuidv4();
+  const userDocRef = doc(postsCollection, postId);
+
   await setDoc(userDocRef, {
     ...post,
+    postId,
   });
 }
 
@@ -34,4 +38,11 @@ export async function getUserPosts(currentUserId) {
     posts.push(doc.data());
   });
   return posts;
+}
+
+export async function getPostById(postId) {
+  const q = query(postsCollection, where('postId', '==', postId));
+  const querySnapshot = await getDocs(q);
+  const post = querySnapshot.docs[0]?.data();
+  return post;
 }
