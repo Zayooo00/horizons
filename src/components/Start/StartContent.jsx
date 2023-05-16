@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 
+import start_bg from '../../assets/images/start_bg.jpg';
 import '../../theme/css/Start.css';
 
 export default function StartContent() {
@@ -8,10 +9,9 @@ export default function StartContent() {
       <div
         className="img-section overlay-dark-bg-1"
         style={{
-          backgroundImage:
-            'url(https://24pm.com/images/2023/01/24/midjourney-ultra_realistic_cinematic_photographyfine_artabstrac-mini.jpg)',
+          backgroundImage: `url(${start_bg})`,
         }}
-      ></div>
+      />
       <div className="img-section-cover"></div>
       <div className="flex-mh-inner dark-bg-1">
         <div className="container p-tb flex-container responsive">
