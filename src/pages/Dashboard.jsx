@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import OnboardingModal from '../components/Dashboard/OnboardingModal';
 import Headbar from '../components/Headbar';

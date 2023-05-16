@@ -59,7 +59,7 @@ export default function ProfilePanel() {
     <>
       <Headbar />
       <Center mx={4}>
-        <Flex direction="column" width="160vh" minH="100vh" pt="120px">
+        <Flex direction="column" width="160vh" pt="120px">
           <Flex
             direction={{ base: 'column', sm: 'column', md: 'row' }}
             mb="24px"
