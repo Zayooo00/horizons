@@ -10,7 +10,8 @@ import {
   IconButton,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { DownloadIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+import { DownloadIcon } from '@chakra-ui/icons';
+import { BiShareAlt } from 'react-icons/bi';
 
 import Headbar from '../components/Headbar';
 import LoadingBar from '../components/Create/LoadingBar';
@@ -24,11 +25,15 @@ export default function ImageGenerationForm() {
   const [error, setError] = useState(null);
   const [images, setImages] = useState([]);
 
+  const ERROR_MODEL_LOADING =
+    'Model prompthero/openjourney is currently loading';
+
   const handleSubmit = async (event, form) => {
     const input = form.elements.input.value;
     const timestamp = Date.now();
     event.preventDefault();
     setIsImageLoading(true);
+    setError(null);
 
     try {
       const responses = await Promise.all(
@@ -49,7 +54,9 @@ export default function ImageGenerationForm() {
       if (responses.some((response) => !response.ok)) {
         const response = responses.find((response) => !response.ok);
         const errorData = await response.json();
-        throw new Error(errorData.error);
+        if (errorData.error == ERROR_MODEL_LOADING) {
+          throw new Error(errorData.error + '. ETA: 90s');
+        } else throw new Error(errorData.error);
       }
 
       const blobs = await Promise.all(
@@ -161,13 +168,14 @@ export default function ImageGenerationForm() {
                   />
                   <IconButton
                     size="md"
+                    fontSize={18}
                     bg="white"
                     color="black"
                     position="absolute"
                     top={2}
                     right={14}
                     aria-label="Share image"
-                    icon={<ExternalLinkIcon />}
+                    icon={<BiShareAlt />}
                     onClick={() => {
                       setSelectedImage(image);
                       handleShare();

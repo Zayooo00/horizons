@@ -40,7 +40,7 @@ export default function Dashboard() {
       <Headbar />
       <MasonryLayout>
         {posts.map((post) => (
-          <Post key={post.title} post={post} />
+          <Post key={post.postId} post={post} />
         ))}
       </MasonryLayout>
     </>

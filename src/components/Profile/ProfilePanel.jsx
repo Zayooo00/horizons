@@ -15,7 +15,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaPenFancy } from 'react-icons/fa';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
-import { fetchUserProfile } from '../../services/profiles-service';
+import { getUserById } from '../../services/profiles-service';
 import { getUserPosts } from '../../services/posts-service';
 import { UserAuth, getUserFromLocalStorage } from '../../context/AuthContext';
 import Headbar from '../Headbar';
@@ -45,7 +45,7 @@ export default function ProfilePanel() {
     const currentUserId = getUserFromLocalStorage();
 
     async function fetchData() {
-      const userData = await fetchUserProfile(currentUserId);
+      const userData = await getUserById(currentUserId);
       if (userData) {
         setProfileData(userData);
       }
@@ -175,33 +175,6 @@ export default function ProfilePanel() {
               <CardBody px="5px">
                 <Flex direction="column">
                   <Flex align="center" mb="18px">
-                    <Text fontSize="md" color={textColor} me="10px">
-                      First name:{' '}
-                    </Text>
-                    <Text fontSize="md" color="gray.400" fontWeight="400">
-                      {profileData.firstName}
-                    </Text>
-                  </Flex>
-                  <Flex align="center" mb="18px">
-                    <Text fontSize="md" color={textColor} me="10px">
-                      Last name:{' '}
-                    </Text>
-                    <Text fontSize="md" color="gray.400" fontWeight="400">
-                      {profileData.lastName}
-                    </Text>
-                  </Flex>
-                  <Flex align="center" mb="18px">
-                    <Text fontSize="md" color={textColor} me="10px">
-                      Username:{' '}
-                    </Text>
-                    <Text fontSize="md" color="gray.400" fontWeight="400">
-                      {profileData.username}
-                    </Text>
-                  </Flex>
-                  <Flex align="center" mb="18px">
-                    <Text fontSize="md" color={textColor} me="10px">
-                      Description:{' '}
-                    </Text>
                     <Text fontSize="md" color="gray.400" fontWeight="400">
                       {profileData.description}
                     </Text>

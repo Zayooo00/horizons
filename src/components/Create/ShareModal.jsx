@@ -21,10 +21,7 @@ import PropTypes from 'prop-types';
 import { getUserFromLocalStorage } from '../../context/AuthContext';
 import { createPost } from '../../services/posts-service';
 import Validator from '../../helpers/Validator';
-import {
-  capitalizeFirstLetterOnly,
-  capitalizeFirstLetterAndLowercaseRest,
-} from '../../helpers/Normalizer';
+import { capitalizeFirstLetterAndLowercaseRest } from '../../helpers/Normalizer';
 
 export default function ShareModal({ isOpen, onClose, image, prompt }) {
   const currentUserId = getUserFromLocalStorage();
@@ -85,7 +82,12 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
   function handleTitleChange(event) {
     const { value } = event.target;
 
-    if (!validator.validateTextOnly(value)) {
+    if (!value.trim()) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        title: 'Title cannot only contain empty spaces',
+      }));
+    } else if (!validator.validateTextSpacesAndNumbersOnly(value)) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         title: 'Title can only contain letters',
@@ -129,10 +131,9 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
       setErrors((prevErrors) => ({ ...prevErrors, description: '' }));
     }
 
-    const normalizedDescription = capitalizeFirstLetterOnly(value);
     setPost((prevPost) => ({
       ...prevPost,
-      description: normalizedDescription,
+      description: value,
     }));
   }
 
