@@ -27,18 +27,6 @@ export default function SignUpForm() {
 
   const authError_EMAIL_ALREADY_IN_USE = 'auth/email-already-in-use';
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleConfirmPasswordChange = (event) => {
-    setConfirmPassword(event.target.value);
-  };
-
   const handleSignUp = async (event) => {
     event.preventDefault();
     setIsAuthLoading(true);
@@ -72,15 +60,15 @@ export default function SignUpForm() {
     <>
       <Flex
         position={{ base: 'absolute', md: 'inherit' }}
-        top={{ base: 28, md: 'inherit' }}
-        left={{ base: 0, md: 'inherit' }}
-        right={{ base: 0, md: 'inherit' }}
+        top={{ base: 28, md: 'auto' }}
+        left={{ base: 0, md: 'auto' }}
+        right={{ base: 0, md: 'auto' }}
         p={8}
         flex={1}
         align={'center'}
         justify={'center'}
       >
-        <Stack rounded={'1rem'} spacing={4} w={'full'} maxW={'md'}>
+        <Stack spacing={4} w={'full'} maxW={'md'}>
           <Heading fontSize={'2xl'}>Create your account</Heading>
           {authError && (
             <Text fontSize="sm" color="red" mt={8}>
@@ -89,22 +77,26 @@ export default function SignUpForm() {
           )}
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>
-            <Input type="email" value={email} onChange={handleEmailChange} />
+            <Input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+            />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Password</FormLabel>
             <Input
-              type="password"
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
             />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Confirm password</FormLabel>
             <Input
-              type="password"
               value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              type="password"
             />
           </FormControl>
           <Stack spacing={6}>

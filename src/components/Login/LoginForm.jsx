@@ -58,9 +58,9 @@ export default function LoginForm() {
   return (
     <Flex
       position={{ base: 'absolute', md: 'inherit' }}
-      top={{ base: 28, md: 'inherit' }}
-      left={{ base: 0, md: 'inherit' }}
-      right={{ base: 0, md: 'inherit' }}
+      top={{ base: 28, md: 'auto' }}
+      left={{ base: 0, md: 'auto' }}
+      right={{ base: 0, md: 'auto' }}
       p={8}
       flex={1}
       align={'center'}
@@ -73,56 +73,55 @@ export default function LoginForm() {
             {authError}
           </Text>
         )}
-        <form onSubmit={handleEmailSignIn}>
-          <FormControl id="email">
-            <FormLabel>Email address</FormLabel>
-            <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-            />
-          </FormControl>
-          <FormControl id="password">
-            <FormLabel>Password</FormLabel>
-            <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-            />
-          </FormControl>
-          <Stack spacing={6}>
+        <FormControl id="email">
+          <FormLabel>Email address</FormLabel>
+          <Input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+          />
+        </FormControl>
+        <FormControl id="password">
+          <FormLabel>Password</FormLabel>
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+          />
+        </FormControl>
+        <Stack spacing={6}>
+          <Button
+            onClick={handleEmailSignIn}
+            mt={4}
+            type="submit"
+            bg={'#D4E45D'}
+            _hover={{
+              bg: '#9aaa1d',
+            }}
+            color={'black'}
+            variant={'solid'}
+          >
+            {isAuthLoading ? <Spinner size={'sm'} /> : 'Log in'}
+          </Button>
+        </Stack>
+        <Stack>
+          <Center mt={-2.5}>
+            <Divider w={'25%'} />
+            <Text m={2}>Or continue with:</Text>
+            <Divider w={'25%'} />
+          </Center>
+          <Center>
             <Button
-              mt={4}
-              type="submit"
-              bg={'#D4E45D'}
-              _hover={{
-                bg: '#9aaa1d',
-              }}
-              color={'black'}
-              variant={'solid'}
+              type="button"
+              onClick={handleGoogleSignIn}
+              rounded={'2rem'}
+              w={'full'}
+              bg={'white'}
             >
-              {isAuthLoading ? <Spinner size={'sm'} /> : 'Log in'}
+              <FcGoogle color="white" alt="Google Icon" />
             </Button>
-          </Stack>
-          <Stack>
-            <Center>
-              <Divider w={'25%'} />
-              <Text m={2}>Or continue with:</Text>
-              <Divider w={'25%'} />
-            </Center>
-            <Center>
-              <Button
-                type="button"
-                onClick={handleGoogleSignIn}
-                rounded={'2rem'}
-                w={'full'}
-                bg={'white'}
-              >
-                <FcGoogle color="white" alt="Google Icon" />
-              </Button>
-            </Center>
-          </Stack>
-        </form>
+          </Center>
+        </Stack>
       </Stack>
     </Flex>
   );
