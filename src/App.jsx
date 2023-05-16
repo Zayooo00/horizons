@@ -14,6 +14,7 @@ import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Create from './pages/Create';
 import Profile from './pages/Profile';
+import Post from './pages/Post';
 
 export default function App() {
   return (
@@ -51,6 +52,14 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/post/:id"
+                element={
+                  <ProtectedRoute>
+                    <Post />
                   </ProtectedRoute>
                 }
               />
