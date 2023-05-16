@@ -57,7 +57,10 @@ export default function LoginForm() {
 
   return (
     <Flex
-      mt={{ base: '60px', sm: '0' }}
+      position={{ base: 'absolute', md: 'inherit' }}
+      top={{ base: 28, md: 'inherit' }}
+      left={{ base: 0, md: 'inherit' }}
+      right={{ base: 0, md: 'inherit' }}
       p={8}
       flex={1}
       align={'center'}

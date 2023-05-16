@@ -70,7 +70,16 @@ export default function SignUpForm() {
 
   return (
     <>
-      <Flex p={8} flex={1} align={'center'} justify={'center'}>
+      <Flex
+        position={{ base: 'absolute', md: 'inherit' }}
+        top={{ base: 28, md: 'inherit' }}
+        left={{ base: 0, md: 'inherit' }}
+        right={{ base: 0, md: 'inherit' }}
+        p={8}
+        flex={1}
+        align={'center'}
+        justify={'center'}
+      >
         <Stack rounded={'1rem'} spacing={4} w={'full'} maxW={'md'}>
           <Heading fontSize={'2xl'}>Create your account</Heading>
           {authError && (
