@@ -15,7 +15,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaPenFancy } from 'react-icons/fa';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
-import { fetchUserProfile } from '../../services/profiles-service';
+import { getUserById } from '../../services/profiles-service';
 import { getUserPosts } from '../../services/posts-service';
 import { UserAuth, getUserFromLocalStorage } from '../../context/AuthContext';
 import Headbar from '../Headbar';
@@ -45,7 +45,7 @@ export default function ProfilePanel() {
     const currentUserId = getUserFromLocalStorage();
 
     async function fetchData() {
-      const userData = await fetchUserProfile(currentUserId);
+      const userData = await getUserById(currentUserId);
       if (userData) {
         setProfileData(userData);
       }

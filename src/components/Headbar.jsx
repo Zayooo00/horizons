@@ -23,7 +23,7 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 
 import { UserAuth } from '../context/AuthContext';
-import { fetchUserProfile } from '../services/profiles-service';
+import { getUserById } from '../services/profiles-service';
 import logo from '../assets/images/logo.png';
 
 const links = [
@@ -54,7 +54,7 @@ export default function Headbar() {
   const { logout, user } = UserAuth();
 
   useEffect(() => {
-    fetchUserProfile(user.uid).then((data) => {
+    getUserById(user.uid).then((data) => {
       setUserProfile(data);
     });
   }, [user.uid]);

@@ -25,6 +25,9 @@ export default function ImageGenerationForm() {
   const [error, setError] = useState(null);
   const [images, setImages] = useState([]);
 
+  const ERROR_MODEL_LOADING =
+    'Model prompthero/openjourney is currently loading';
+
   const handleSubmit = async (event, form) => {
     const input = form.elements.input.value;
     const timestamp = Date.now();
@@ -51,7 +54,9 @@ export default function ImageGenerationForm() {
       if (responses.some((response) => !response.ok)) {
         const response = responses.find((response) => !response.ok);
         const errorData = await response.json();
-        throw new Error(errorData.error);
+        if (errorData.error == ERROR_MODEL_LOADING) {
+          throw new Error(errorData.error + '. ETA: 90s');
+        } else throw new Error(errorData.error);
       }
 
       const blobs = await Promise.all(

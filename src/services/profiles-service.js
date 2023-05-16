@@ -3,23 +3,23 @@ import { db } from '../firebase/firebase';
 
 const profilesCollection = collection(db, 'profiles');
 
-export async function checkIfUserDocExists(currentUserId) {
-  const userDocRef = doc(profilesCollection, currentUserId);
+export async function checkIfUserDocExists(userId) {
+  const userDocRef = doc(profilesCollection, userId);
   const userDocSnap = await getDoc(userDocRef);
 
   return userDocSnap.exists();
 }
 
-export async function uploadUserInfo(profile, avatar, currentUserId) {
-  const userDocRef = doc(profilesCollection, currentUserId);
+export async function uploadUserInfo(profile, avatar, userId) {
+  const userDocRef = doc(profilesCollection, userId);
   await setDoc(userDocRef, {
     ...profile,
     avatar,
   });
 }
 
-export async function fetchUserProfile(currentUserId) {
-  const userDocRef = doc(profilesCollection, currentUserId);
+export async function getUserById(userId) {
+  const userDocRef = doc(profilesCollection, userId);
   const userDocSnap = await getDoc(userDocRef);
 
   if (userDocSnap.exists()) {
