@@ -58,7 +58,8 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
     setIsSubmitting(true);
     const storage = getStorage();
     const response = await fetch(image);
-    const imageData = await response.blob();
+    const clonedResponse = response.clone();
+    const imageData = await clonedResponse.blob();
     const storageRef = ref(storage, `images/${post.postId}`);
 
     await uploadBytes(storageRef, imageData);
