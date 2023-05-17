@@ -70,6 +70,8 @@ export default function LoginForm() {
 
   return (
     <Flex
+      as="form"
+      onSubmit={handleEmailSignIn}
       position={{ base: 'absolute', md: 'inherit' }}
       top={{ base: 28, md: 'auto' }}
       left={{ base: 0, md: 'auto' }}
@@ -106,7 +108,6 @@ export default function LoginForm() {
         </FormControl>
         <Stack spacing={6}>
           <Button
-            onClick={handleEmailSignIn}
             mt={4}
             type="submit"
             bg={'#d4e45d'}

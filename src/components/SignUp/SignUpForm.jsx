@@ -52,6 +52,8 @@ export default function SignUpForm() {
   return (
     <>
       <Flex
+        as="form"
+        onSubmit={handleSignUp}
         position={{ base: 'absolute', md: 'inherit' }}
         top={{ base: 28, md: 'auto' }}
         left={{ base: 0, md: 'auto' }}
@@ -104,7 +106,6 @@ export default function SignUpForm() {
               color={'black'}
               variant={'solid'}
               type="submit"
-              onClick={handleSignUp}
             >
               {isAuthLoading ? <Spinner size={'sm'} /> : 'Sign up'}
             </Button>
