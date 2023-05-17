@@ -220,7 +220,14 @@ export default function OnboardingModal() {
       closeOnEsc={false}
     >
       <ModalOverlay />
-      <ModalContent p={2} mx={2} rounded={'1rem'} top={'20%'} bg={'#1c1e1f'}>
+      <ModalContent
+        w={{ base: '95%', md: 'auto ' }}
+        p={2}
+        mx={2}
+        rounded={'1rem'}
+        top={{ base: '15%', md: '20%' }}
+        bg={'#1c1e1f'}
+      >
         <ModalHeader>Welcome to Horizons!</ModalHeader>
         <ModalBody>
           <Text mt={-2} mb={4}>
