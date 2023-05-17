@@ -18,13 +18,13 @@ import {
   Text,
   Collapse,
 } from '@chakra-ui/react';
+import { useContext } from 'react';
 import { Link as Nav } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 
 import { UserAuth } from '../context/AuthContext';
-import { getUserById } from '../services/profiles-service';
+import { UserContext } from '../context/UserContext';
 import logo from '../assets/images/logo.png';
 
 const links = [
@@ -64,14 +64,8 @@ function Overlay({ isOpen, onClose }) {
 
 export default function Headbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [userProfile, setUserProfile] = useState(null);
   const { logout, user } = UserAuth();
-
-  useEffect(() => {
-    getUserById(user.uid).then((data) => {
-      setUserProfile(data);
-    });
-  }, [user.uid]);
+  const { userProfile } = useContext(UserContext);
 
   const handleLogout = async () => {
     await logout();
