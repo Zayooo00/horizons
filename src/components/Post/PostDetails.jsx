@@ -83,7 +83,7 @@ export default function PostDetails() {
             <Divider mt={6} />
             <Box
               w="75vw"
-              maxW={{ base: 200, md: 400 }}
+              maxW={{ base: 400, md: 280 }}
               d="flex"
               mt={4}
               alignItems="center"

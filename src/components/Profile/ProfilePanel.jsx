@@ -173,7 +173,7 @@ export default function ProfilePanel() {
             gap="22px"
           >
             <Card p="16px" bg="#2a2f38" rounded="2rem" mb="24px">
-              <CardHeader p="12px 5px" mb="12px">
+              <CardHeader p="12px 5px">
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Profile Information
                 </Text>
@@ -210,7 +210,9 @@ export default function ProfilePanel() {
                   gap={6}
                 >
                   {userPosts.map((post) => (
-                    <Image key={post.id} src={post.image} />
+                    <Link key={post.postId} to={`/post/${post.postId}`}>
+                      <Image src={post.image} />
+                    </Link>
                   ))}
                 </Grid>
               </CardBody>

@@ -9,7 +9,7 @@ export default function Post({ post }) {
   return (
     <Link to={`/post/${post.postId}`}>
       <Box
-        key={post.title}
+        key={post.postId}
         position="relative"
         onMouseEnter={() => setShowDetails(true)}
         onMouseLeave={() => setShowDetails(false)}
