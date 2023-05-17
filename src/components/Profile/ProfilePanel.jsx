@@ -25,12 +25,12 @@ import CardHeader from './ProfileCards/CardHeader';
 
 export default function ProfilePanel() {
   const { colorMode } = useColorMode();
-  const { logout } = UserAuth();
+  const { user, logout } = UserAuth();
   const navigate = useNavigate();
   const headerColor = useColorModeValue('gray.700', 'white');
   const textColor = useColorModeValue('white', 'white');
   const [userPosts, setUserPosts] = useState([]);
-  const [profileData, setProfileData] = useState({
+  const [userProfile, setUserProfile] = useState({
     firstName: '',
     lastName: '',
     location: '',
@@ -47,7 +47,7 @@ export default function ProfilePanel() {
     async function fetchData() {
       const userData = await getUserById(currentUserId);
       if (userData) {
-        setProfileData(userData);
+        setUserProfile(userData);
       }
       const postsData = await getUserPosts(currentUserId);
       setUserPosts(postsData);
@@ -87,26 +87,32 @@ export default function ProfilePanel() {
                 me={{ md: '22px' }}
                 w="80px"
                 h="80px"
+                size="xl"
                 borderRadius="15px"
-                bg="transparent"
-                src={profileData.avatar}
+                bg={userProfile?.avatar ? 'transparent' : 'teal.200'}
+                src={userProfile.avatar}
+                name={user.email}
               />
-              <Flex direction="column" maxWidth="100%" my={{ sm: '14px' }}>
+              <Flex
+                direction="column"
+                maxWidth="100%"
+                mt={{ base: '8px', sm: '8px' }}
+              >
                 <Text
                   fontSize={{ base: 'lg', sm: 'lg', lg: 'xl' }}
                   color="white"
                   fontWeight="bold"
                   ms={{ base: '8px', sm: '8px', md: '0px' }}
                 >
-                  {profileData.firstName} {profileData.lastName}
+                  {userProfile.firstName} {userProfile.lastName}
                 </Text>
                 <Text
-                  mt={{ base: '10px', sm: '0px', md: '0px', lg: '0px' }}
+                  mt={{ base: '0px', sm: '0px', md: '0px', lg: '0px' }}
                   fontSize={{ base: 'sm', sm: 'sm', md: 'md' }}
                   color="whiteAlpha.900"
                   fontWeight="semibold"
                 >
-                  @{profileData.username}
+                  {userProfile?.username ? `@${userProfile.username}` : ''}
                 </Text>
               </Flex>
             </Flex>
@@ -176,7 +182,7 @@ export default function ProfilePanel() {
                 <Flex direction="column">
                   <Flex align="center" mb="18px">
                     <Text fontSize="md" color="gray.400" fontWeight="400">
-                      {profileData.description}
+                      {userProfile.description}
                     </Text>
                   </Flex>
                 </Flex>

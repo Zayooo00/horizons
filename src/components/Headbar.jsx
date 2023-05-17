@@ -120,9 +120,10 @@ export default function Headbar() {
                 minW={0}
               >
                 <Avatar
-                  bg={'transparent'}
+                  bg={userProfile?.avatar ? 'transparent' : 'teal.500'}
                   size={'sm'}
                   src={userProfile?.avatar || ''}
+                  name={user.email}
                 />
               </MenuButton>
               <MenuList bg="#233433" w={'273px'} p={1}>
@@ -141,11 +142,15 @@ export default function Headbar() {
                       <Avatar
                         my={-2}
                         size={'lg'}
+                        bg={userProfile?.avatar ? 'transparent' : 'teal.500'}
                         src={userProfile?.avatar || ''}
+                        name={user.email}
                       />
                       <Flex ml={4} flexDirection="column">
                         <Text fontSize="sm">
-                          @{userProfile?.username || ''}
+                          {userProfile?.username
+                            ? `@${userProfile.username}`
+                            : ''}
                         </Text>
                         <Text fontSize="xs" color={'#a6a6a6'}>
                           {user.email}
