@@ -16,6 +16,7 @@ import Dashboard from './pages/Dashboard';
 import Create from './pages/Create';
 import Profile from './pages/Profile';
 import Post from './pages/Post';
+import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
@@ -81,6 +82,7 @@ export default function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </UserProvider>
           </AuthContextProvider>
