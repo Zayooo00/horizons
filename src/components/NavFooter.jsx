@@ -9,21 +9,21 @@ export default function NavFooter() {
       alignItems="center"
       bg="black"
       px={'20vw'}
-      py={3}
+      py={1}
       position="fixed"
       bottom={0}
       left={0}
       right={0}
     >
       <Link to="/login">
-        <Text fontSize={'md'}>LOG IN</Text>
+        <Text fontSize={'sm'}>LOG IN</Text>
       </Link>
       <Center height="50px">
         <Divider orientation="vertical" color="white" />
       </Center>
       <Link to="/sign-up">
         {' '}
-        <Text fontSize={'md'}>SIGN UP</Text>
+        <Text fontSize={'sm'}>SIGN UP</Text>
       </Link>
     </Flex>
   );
