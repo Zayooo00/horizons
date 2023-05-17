@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Image,
@@ -8,16 +8,39 @@ import {
   Flex,
   Avatar,
   Divider,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  useToast,
 } from '@chakra-ui/react';
+import { FiMoreVertical } from 'react-icons/fi';
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
-import { getPostById } from '../../services/posts-service';
+import { getPostById, deletePost } from '../../services/posts-service';
 import { getUserById } from '../../services/profiles-service';
+import { getUserFromLocalStorage } from '../../context/AuthContext';
+import HorizonsSpinner from '../HorizonsSpinner';
 
 export default function PostDetails() {
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState('');
   const [authorProfile, setAuthorProfile] = useState('');
+  const currentUserId = getUserFromLocalStorage();
+  const toast = useToast();
   const { id } = useParams();
+  const navigate = useNavigate();
 
+  const handleDeletePost = async () => {
+    await deletePost(post.postId);
+    toast({
+      title: 'Post deleted',
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    });
+    navigate(-1);
+  };
   useEffect(() => {
     const fetchPost = async () => {
       const post = await getPostById(id);
@@ -39,7 +62,7 @@ export default function PostDetails() {
   }, [post]);
 
   if (!post) {
-    return <p>Loading...</p>;
+    return <HorizonsSpinner />;
   }
 
   return (
@@ -68,16 +91,75 @@ export default function PostDetails() {
             </Box>
             <Box>{post.description}</Box>
             <Box mt={6}>
-              <Flex alignItems="center">
-                <Avatar my={-2} size={'lg'} src={authorProfile?.avatar || ''} />
-                <Box ml={4}>
-                  <Text fontWeight={'bold'}>
-                    {authorProfile?.firstName + ' ' + authorProfile?.lastName}
-                  </Text>
-                  <Text fontSize="sm" letterSpacing="wide">
-                    @{authorProfile?.username}
-                  </Text>
-                </Box>
+              <Flex alignItems="center" justifyContent="space-between">
+                <Flex alignItems="center" flexGrow={1}>
+                  <Avatar
+                    my={-2}
+                    size={'lg'}
+                    src={authorProfile?.avatar || ''}
+                  />
+                  <Box ml={4}>
+                    <Text fontWeight={'bold'}>
+                      {authorProfile?.firstName + ' ' + authorProfile?.lastName}
+                    </Text>
+                    <Text fontSize="sm" letterSpacing="wide">
+                      @{authorProfile?.username}
+                    </Text>
+                  </Box>
+                </Flex>
+                {currentUserId === post.author && (
+                  <Menu isLazy>
+                    <MenuButton
+                      as={IconButton}
+                      aria-label="Options"
+                      icon={<FiMoreVertical />}
+                      bg="transparent"
+                      _hover={{
+                        bg: 'transparent',
+                      }}
+                      size="lg"
+                    />
+                    <MenuList bg={'#1c1e1f'}>
+                      <MenuItem
+                        color={'red'}
+                        bg={'#1c1e1f'}
+                        onClick={handleDeletePost}
+                        _hover={{
+                          bg: '#313537',
+                        }}
+                      >
+                        <Box
+                          color={'red'}
+                          boxSize={5}
+                          as={AiOutlineDelete}
+                          mb={0.5}
+                          mr={2}
+                        />
+                        Delete
+                      </MenuItem>
+                      <MenuItem
+                        mb={2}
+                        bg={'#1c1e1f'}
+                        _hover={{
+                          bg: '#313537',
+                        }}
+                      >
+                        <Box boxSize={5} as={AiOutlineEdit} mr={2} />
+                        Edit
+                      </MenuItem>
+                      <Divider />
+                      <MenuItem
+                        mt={2}
+                        bg={'#1c1e1f'}
+                        _hover={{
+                          bg: '#313537',
+                        }}
+                      >
+                        Cancel
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                )}
               </Flex>
             </Box>
             <Divider mt={6} />
