@@ -16,6 +16,7 @@ import {
   FormErrorIcon,
 } from '@chakra-ui/react';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 
 import { getUserFromLocalStorage } from '../../context/AuthContext';
@@ -31,6 +32,7 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
   const [post, setPost] = useState({
     title: '',
     author: currentUserId,
+    postId: uuidv4(),
     description: '',
     image: image,
     prompt: prompt,
@@ -57,7 +59,7 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
     const storage = getStorage();
     const response = await fetch(image);
     const imageData = await response.blob();
-    const storageRef = ref(storage, `images/${post.title}`);
+    const storageRef = ref(storage, `images/${post.postId}`);
 
     await uploadBytes(storageRef, imageData);
 
@@ -67,12 +69,13 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
       ...prevPost,
       image: downloadURL,
     }));
-    createPost({ ...post, image: downloadURL, prompt: prompt }, currentUserId);
+    createPost({ ...post, image: downloadURL, prompt: prompt }, post.postId);
     setIsSubmitting(false);
     onClose();
     setPost({
       title: '',
       author: currentUserId,
+      postId: uuidv4(),
       description: '',
       image: image,
       prompt: prompt,
@@ -222,6 +225,6 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
 ShareModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  image: PropTypes.string.isRequired,
+  image: PropTypes.string,
   prompt: PropTypes.string.isRequired,
 };

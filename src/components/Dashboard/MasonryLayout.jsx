@@ -28,8 +28,8 @@ export default function MasonryLayout({ children }) {
         },
       }}
     >
-      {children.map((child) => (
-        <Box key={child.id} className="masonry-item">
+      {children.map((child, index) => (
+        <Box key={index} className="masonry-item">
           {child}
         </Box>
       ))}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import OnboardingModal from '../components/Dashboard/OnboardingModal';
 import Headbar from '../components/Headbar';
@@ -6,15 +6,17 @@ import MasonryLayout from '../components/Dashboard/MasonryLayout';
 import Post from '../components/Dashboard/Post';
 import { checkIfUserDocExists } from '../services/profiles-service';
 import { getUserFromLocalStorage } from '../context/AuthContext';
+import { UserContext } from '../context/UserContext';
 import { getAllPosts } from '../services/posts-service';
 
 export default function Dashboard() {
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const { setUserProfile } = useContext(UserContext);
+  const currentUserId = getUserFromLocalStorage();
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const checkUserDoc = async () => {
-      const currentUserId = getUserFromLocalStorage();
       const userDocExists = await checkIfUserDocExists(currentUserId);
 
       if (!userDocExists) {
@@ -36,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <>
-      {showOnboarding && <OnboardingModal />}
+      {showOnboarding && <OnboardingModal setUserProfile={setUserProfile} />}
       <Headbar />
       <MasonryLayout>
         {posts.map((post) => (

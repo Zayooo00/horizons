@@ -16,13 +16,15 @@ import {
   Stack,
   Image,
   Text,
+  Collapse,
 } from '@chakra-ui/react';
+import { useContext, useEffect, useState } from 'react';
 import { Link as Nav } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 
 import { UserAuth } from '../context/AuthContext';
+import { UserContext } from '../context/UserContext';
 import { getUserById } from '../services/profiles-service';
 import logo from '../assets/images/logo.png';
 
@@ -48,14 +50,28 @@ const NavLink = ({ children, to }) => (
   </Link>
 );
 
+function Overlay({ isOpen, onClose }) {
+  return isOpen ? (
+    <Box
+      position="fixed"
+      top="0"
+      left="0"
+      w="100%"
+      h="100%"
+      onClick={onClose}
+    />
+  ) : null;
+}
+
 export default function Headbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [userProfile, setUserProfile] = useState(null);
   const { logout, user } = UserAuth();
+  const { userProfile: contextUserProfile } = useContext(UserContext);
+  const [stateUserProfile, setStateUserProfile] = useState(null);
 
   useEffect(() => {
     getUserById(user.uid).then((data) => {
-      setUserProfile(data);
+      setStateUserProfile(data);
     });
   }, [user.uid]);
 
@@ -63,8 +79,11 @@ export default function Headbar() {
     await logout();
   };
 
+  const userProfile = stateUserProfile || contextUserProfile;
+
   return (
     <>
+      <Overlay isOpen={isOpen} onClose={onClose} />
       <Box bg={'#294747'} px={4} position="fixed" top="0" w="100%" zIndex="1">
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
@@ -111,9 +130,10 @@ export default function Headbar() {
                 minW={0}
               >
                 <Avatar
-                  bg={'transparent'}
+                  bg={userProfile?.avatar ? 'transparent' : 'teal.500'}
                   size={'sm'}
                   src={userProfile?.avatar || ''}
+                  name={user.email}
                 />
               </MenuButton>
               <MenuList bg="#233433" w={'273px'} p={1}>
@@ -132,11 +152,15 @@ export default function Headbar() {
                       <Avatar
                         my={-2}
                         size={'lg'}
+                        bg={userProfile?.avatar ? 'transparent' : 'teal.500'}
                         src={userProfile?.avatar || ''}
+                        name={user.email}
                       />
                       <Flex ml={4} flexDirection="column">
                         <Text fontSize="sm">
-                          @{userProfile?.username || ''}
+                          {userProfile?.username
+                            ? `@${userProfile.username}`
+                            : ''}
                         </Text>
                         <Text fontSize="xs" color={'#a6a6a6'}>
                           {user.email}
@@ -182,8 +206,7 @@ export default function Headbar() {
             </Menu>
           </Flex>
         </Flex>
-
-        {isOpen ? (
+        <Collapse in={isOpen}>
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
               {links.map((link) => (
@@ -193,7 +216,7 @@ export default function Headbar() {
               ))}
             </Stack>
           </Box>
-        ) : null}
+        </Collapse>
       </Box>
     </>
   );
@@ -202,4 +225,9 @@ export default function Headbar() {
 NavLink.propTypes = {
   children: PropTypes.node.isRequired,
   to: PropTypes.string.isRequired,
+};
+
+Overlay.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };

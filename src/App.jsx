@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ChakraProvider, Box } from '@chakra-ui/react';
 
 import { AuthContextProvider } from './context/AuthContext';
+import { UserProvider } from './context/UserContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthRoute from './components/AuthRoute';
 import theme from './theme/theme';
@@ -22,64 +23,66 @@ export default function App() {
       <Box bg={theme.palette.primary}>
         <Router>
           <AuthContextProvider>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <AuthRoute>
-                    <Start />
-                  </AuthRoute>
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  <AuthRoute>
-                    <Login />
-                  </AuthRoute>
-                }
-              />
-              <Route
-                path="/sign-up"
-                element={
-                  <AuthRoute>
-                    <SignUp />
-                  </AuthRoute>
-                }
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/post/:id"
-                element={
-                  <ProtectedRoute>
-                    <Post />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/create"
-                element={
-                  <ProtectedRoute>
-                    <Create />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
+            <UserProvider>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <AuthRoute>
+                      <Start />
+                    </AuthRoute>
+                  }
+                />
+                <Route
+                  path="/login"
+                  element={
+                    <AuthRoute>
+                      <Login />
+                    </AuthRoute>
+                  }
+                />
+                <Route
+                  path="/sign-up"
+                  element={
+                    <AuthRoute>
+                      <SignUp />
+                    </AuthRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/post/:id"
+                  element={
+                    <ProtectedRoute>
+                      <Post />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/create"
+                  element={
+                    <ProtectedRoute>
+                      <Create />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </UserProvider>
           </AuthContextProvider>
         </Router>
       </Box>

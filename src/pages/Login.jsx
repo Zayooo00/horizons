@@ -9,7 +9,7 @@ export default function Login() {
   return (
     <>
       <Navbar />
-      <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+      <Stack h={'100svh'} direction={{ base: 'column', md: 'row' }}>
         <LoginForm />
         <BackgroundImage image={login_bg} />
       </Stack>

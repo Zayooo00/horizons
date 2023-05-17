@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Textarea,
   Button,
-  Spinner,
   Image,
   Flex,
   Text,
   IconButton,
   SimpleGrid,
+  Spinner,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 import { BiShareAlt } from 'react-icons/bi';
@@ -18,6 +19,8 @@ import LoadingBar from '../components/Create/LoadingBar';
 import ShareModal from '../components/Create/ShareModal';
 
 export default function ImageGenerationForm() {
+  const iconButtonSize = useBreakpointValue({ base: 'sm', md: 'sm', lg: 'md' });
+  const [countdownValue, setCountdownValue] = useState(90);
   const [inputValue, setInputValue] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -27,6 +30,14 @@ export default function ImageGenerationForm() {
 
   const ERROR_MODEL_LOADING =
     'Model prompthero/openjourney is currently loading';
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdownValue((prevValue) => prevValue - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = async (event, form) => {
     const input = form.elements.input.value;
@@ -54,9 +65,7 @@ export default function ImageGenerationForm() {
       if (responses.some((response) => !response.ok)) {
         const response = responses.find((response) => !response.ok);
         const errorData = await response.json();
-        if (errorData.error == ERROR_MODEL_LOADING) {
-          throw new Error(errorData.error + '. ETA: 90s');
-        } else throw new Error(errorData.error);
+        new Error(errorData.error);
       }
 
       const blobs = await Promise.all(
@@ -112,10 +121,11 @@ export default function ImageGenerationForm() {
           />
           <Button
             isDisabled={!inputValue || !inputValue.trim()}
+            isLoading={isImageLoading}
+            spinner={<Spinner speed="1s" size="md" />}
             fontSize="sm"
             fontWeight={200}
             h={'38px'}
-            mt={'00.5px'}
             ml={{ base: 0, md: 2 }}
             w={{ base: 'full', md: 'auto' }}
             type="submit"
@@ -124,12 +134,18 @@ export default function ImageGenerationForm() {
               bg: '#3b5655',
             }}
           >
-            {isImageLoading ? <Spinner speed="0.9s" /> : 'Generate'}
+            Generate
           </Button>
         </Flex>
         {error && (
           <Flex justifyContent="center" mt={4} mx={4}>
-            <Text color={'red.600'}>{error}</Text>
+            <Text color={'red.600'}>
+              {error === ERROR_MODEL_LOADING
+                ? countdownValue > 0
+                  ? `Model is currently loading, estimated time: ${countdownValue}s`
+                  : 'Please wait...'
+                : error}
+            </Text>
           </Flex>
         )}
         {isImageLoading && <LoadingBar />}
@@ -141,8 +157,8 @@ export default function ImageGenerationForm() {
             mt={8}
             mx={{ base: 4, sm: 4, md: 4, lg: 4, xl: 60 }}
           >
-            {images.map((image) => (
-              <Box position="relative" key={image.id}>
+            {images.map((image, index) => (
+              <Box position="relative" key={index}>
                 <Box
                   transition="transform 0.2s ease-in-out"
                   _hover={{
@@ -151,7 +167,7 @@ export default function ImageGenerationForm() {
                 >
                   <Image src={image} alt="Generated image" maxW={'400px'} />
                   <IconButton
-                    size="md"
+                    size={iconButtonSize}
                     bg="white"
                     color="black"
                     position="absolute"
@@ -167,13 +183,12 @@ export default function ImageGenerationForm() {
                     }}
                   />
                   <IconButton
-                    size="md"
-                    fontSize={18}
+                    size={iconButtonSize}
                     bg="white"
                     color="black"
                     position="absolute"
                     top={2}
-                    right={14}
+                    right={{ base: 12, sm: 12, md: 12, lg: 14 }}
                     aria-label="Share image"
                     icon={<BiShareAlt />}
                     onClick={() => {

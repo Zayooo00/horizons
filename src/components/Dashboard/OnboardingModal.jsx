@@ -18,6 +18,7 @@ import {
   FormErrorIcon,
 } from '@chakra-ui/react';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import PropTypes from 'prop-types';
 
 import { uploadUserInfo } from '../../services/profiles-service';
 import { getUserFromLocalStorage } from '../../context/AuthContext';
@@ -28,9 +29,10 @@ import {
   convertToLowercase,
 } from '../../helpers/Normalizer';
 
-export default function OnboardingModal() {
+export default function OnboardingModal({ setUserProfile }) {
   const currentUserId = getUserFromLocalStorage();
   const validator = Validator.getInstance();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [profile, setProfile] = useState({
@@ -72,6 +74,7 @@ export default function OnboardingModal() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
     let downloadURL;
 
     if (avatar) {
@@ -83,8 +86,11 @@ export default function OnboardingModal() {
       await uploadBytes(storageRef, blob);
       downloadURL = await getDownloadURL(storageRef);
     }
+
     uploadUserInfo(profile, downloadURL, currentUserId);
+    setUserProfile({ ...profile, avatar: downloadURL });
     setIsOpen(false);
+    setIsSubmitting(false);
   };
 
   function handleFirstNameChange(event) {
@@ -217,9 +223,17 @@ export default function OnboardingModal() {
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       closeOnOverlayClick={false}
+      closeOnEsc={false}
     >
       <ModalOverlay />
-      <ModalContent p={2} mx={2} rounded={'1rem'} top={'20%'} bg={'#1c1e1f'}>
+      <ModalContent
+        w={{ base: '95%', md: 'auto ' }}
+        p={2}
+        mx={2}
+        rounded={'1rem'}
+        top={{ base: '15%', md: '20%' }}
+        bg={'#1c1e1f'}
+      >
         <ModalHeader>Welcome to Horizons!</ModalHeader>
         <ModalBody>
           <Text mt={-2} mb={4}>
@@ -334,6 +348,7 @@ export default function OnboardingModal() {
           <Stack spacing={10} mt={3}>
             <Button
               onClick={handleSubmit}
+              isLoading={isSubmitting}
               isDisabled={!isValid}
               color="white"
               bg="#294747"
@@ -350,3 +365,7 @@ export default function OnboardingModal() {
     </Modal>
   );
 }
+
+OnboardingModal.propTypes = {
+  setUserProfile: PropTypes.func.isRequired,
+};

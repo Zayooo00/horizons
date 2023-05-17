@@ -21,20 +21,33 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [isAuthLoading, setIsAuthLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const ERROR_INVALID_EMAIL = 'auth/invalid-email';
   const ERROR_WRONG_PASSWORD = 'auth/wrong-password';
   const ERROR_USER_NOT_FOUND = 'auth/user-not-found';
   const ERROR_NETWORK_REQUEST_FAILED = 'network-request-failed';
+  const ERROR_POPUP_CLOSED = 'auth/popup-closed-by-user';
 
   const handleGoogleSignIn = async () => {
-    await googleSignIn();
+    setIsGoogleLoading(true);
+    try {
+      await googleSignIn();
+    } catch (e) {
+      setAuthError(e.message);
+      const errorCode = e.code;
+      if (errorCode === ERROR_POPUP_CLOSED) {
+        setAuthError('Popup has been closed by the user.');
+        setIsGoogleLoading(false);
+      }
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   const handleEmailSignIn = async (event) => {
     event.preventDefault();
     setIsAuthLoading(true);
-    setAuthError('');
     try {
       await signIn(email, password);
       setIsAuthLoading(false);
@@ -57,7 +70,12 @@ export default function LoginForm() {
 
   return (
     <Flex
-      mt={{ base: '60px', sm: '0' }}
+      as="form"
+      onSubmit={handleEmailSignIn}
+      position={{ base: 'absolute', md: 'inherit' }}
+      top={{ base: 28, md: 'auto' }}
+      left={{ base: 0, md: 'auto' }}
+      right={{ base: 0, md: 'auto' }}
       p={8}
       flex={1}
       align={'center'}
@@ -70,56 +88,60 @@ export default function LoginForm() {
             {authError}
           </Text>
         )}
-        <form onSubmit={handleEmailSignIn}>
-          <FormControl id="email">
-            <FormLabel>Email address</FormLabel>
-            <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-            />
-          </FormControl>
-          <FormControl id="password">
-            <FormLabel>Password</FormLabel>
-            <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-            />
-          </FormControl>
-          <Stack spacing={6}>
+        <FormControl id="email">
+          <FormLabel>Email address</FormLabel>
+          <Input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            variant="outlineGreen"
+          />
+        </FormControl>
+        <FormControl id="password">
+          <FormLabel>Password</FormLabel>
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            variant="outlineGreen"
+          />
+        </FormControl>
+        <Stack spacing={6}>
+          <Button
+            mt={4}
+            type="submit"
+            bg={'#d4e45d'}
+            _hover={{
+              bg: '#9aaa1d',
+            }}
+            color={'black'}
+            variant={'solid'}
+          >
+            {isAuthLoading ? <Spinner size={'sm'} /> : 'Log in'}
+          </Button>
+        </Stack>
+        <Stack>
+          <Center mt={-2.5}>
+            <Divider w={'25%'} />
+            <Text m={2}>Or continue with:</Text>
+            <Divider w={'25%'} />
+          </Center>
+          <Center>
             <Button
-              mt={4}
-              type="submit"
-              bg={'#D4E45D'}
-              _hover={{
-                bg: '#9aaa1d',
-              }}
-              color={'black'}
-              variant={'solid'}
+              type="button"
+              onClick={handleGoogleSignIn}
+              rounded={'2rem'}
+              w={'full'}
+              bg={'white'}
             >
-              {isAuthLoading ? <Spinner size={'sm'} /> : 'Log in'}
-            </Button>
-          </Stack>
-          <Stack>
-            <Center>
-              <Divider w={'25%'} />
-              <Text m={2}>Or continue with:</Text>
-              <Divider w={'25%'} />
-            </Center>
-            <Center>
-              <Button
-                type="button"
-                onClick={handleGoogleSignIn}
-                rounded={'2rem'}
-                w={'full'}
-                bg={'white'}
-              >
+              {isGoogleLoading ? (
+                <Spinner size="sm" color="black" />
+              ) : (
                 <FcGoogle color="white" alt="Google Icon" />
-              </Button>
-            </Center>
-          </Stack>
-        </form>
+              )}
+            </Button>
+          </Center>
+        </Stack>
       </Stack>
     </Flex>
   );

@@ -25,44 +25,25 @@ export default function SignUpForm() {
   const { createUser } = UserAuth();
   const navigate = useNavigate();
 
-  const authError_EMAIL_ALREADY_IN_USE = 'auth/email-already-in-use';
-
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleConfirmPasswordChange = (event) => {
-    setConfirmPassword(event.target.value);
-  };
+  const ERROR_EMAIL_ALREADY_IN_USE = 'auth/email-already-in-use';
 
   const handleSignUp = async (event) => {
     event.preventDefault();
     setIsAuthLoading(true);
-    setAuthError('');
-    if (!validator.passwordsMatch(password, confirmPassword)) {
-      setAuthError('Passwords do not match');
-      return;
-    }
-    if (!validator.isStrongPassword(password)) {
-      setAuthError('The password must be at least 6 characters.');
-      return;
-    }
-    if (!validator.isValidEmail(email)) {
-      setAuthError('Invalid email address.');
-      return;
-    }
     try {
       await createUser(email, password);
       navigate('/dashboard');
     } catch (e) {
       setAuthError(e.message);
       const errorCode = e.code;
-      if (errorCode === authError_EMAIL_ALREADY_IN_USE) {
+      if (errorCode === ERROR_EMAIL_ALREADY_IN_USE) {
         setAuthError('Email is already in use.');
+      } else if (!validator.passwordsMatch(password, confirmPassword)) {
+        setAuthError('Passwords do not match');
+      } else if (!validator.isStrongPassword(password)) {
+        setAuthError('The password must be at least 6 characters.');
+      } else if (!validator.isValidEmail(email)) {
+        setAuthError('Invalid email address.');
       }
       setIsAuthLoading(false);
     }
@@ -70,8 +51,19 @@ export default function SignUpForm() {
 
   return (
     <>
-      <Flex p={8} flex={1} align={'center'} justify={'center'}>
-        <Stack rounded={'1rem'} spacing={4} w={'full'} maxW={'md'}>
+      <Flex
+        as="form"
+        onSubmit={handleSignUp}
+        position={{ base: 'absolute', md: 'inherit' }}
+        top={{ base: 28, md: 'auto' }}
+        left={{ base: 0, md: 'auto' }}
+        right={{ base: 0, md: 'auto' }}
+        p={8}
+        flex={1}
+        align={'center'}
+        justify={'center'}
+      >
+        <Stack spacing={4} w={'full'} maxW={'md'}>
           <Heading fontSize={'2xl'}>Create your account</Heading>
           {authError && (
             <Text fontSize="sm" color="red" mt={8}>
@@ -80,33 +72,40 @@ export default function SignUpForm() {
           )}
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>
-            <Input type="email" value={email} onChange={handleEmailChange} />
+            <Input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              variant="outlineOrange"
+            />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Password</FormLabel>
             <Input
-              type="password"
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              variant="outlineOrange"
             />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Confirm password</FormLabel>
             <Input
-              type="password"
               value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              type="password"
+              variant="outlineOrange"
             />
           </FormControl>
           <Stack spacing={6}>
             <Button
               bg={'#f47533'}
               _hover={{
-                bg: '#E4450E',
+                bg: '#e4450e',
               }}
               color={'black'}
               variant={'solid'}
-              onClick={handleSignUp}
+              type="submit"
             >
               {isAuthLoading ? <Spinner size={'sm'} /> : 'Sign up'}
             </Button>

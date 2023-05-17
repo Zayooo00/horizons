@@ -1,23 +1,21 @@
 import {
   setDoc,
   getDocs,
+  deleteDoc,
   doc,
   collection,
   query,
   where,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
-import { v4 as uuidv4 } from 'uuid';
 
 const postsCollection = collection(db, 'posts');
 
-export async function createPost(post) {
-  const postId = uuidv4();
+export async function createPost(post, postId) {
   const userDocRef = doc(postsCollection, postId);
 
   await setDoc(userDocRef, {
     ...post,
-    postId,
   });
 }
 
@@ -45,4 +43,9 @@ export async function getPostById(postId) {
   const querySnapshot = await getDocs(q);
   const post = querySnapshot.docs[0]?.data();
   return post;
+}
+
+export async function deletePost(postId) {
+  const postDocRef = doc(postsCollection, postId);
+  await deleteDoc(postDocRef);
 }

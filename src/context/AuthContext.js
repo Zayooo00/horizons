@@ -37,7 +37,7 @@ export function AuthContextProvider({ children }) {
 
   const googleSignIn = useCallback(() => {
     const GoogleProvider = new GoogleAuthProvider();
-    signInWithPopup(auth, GoogleProvider);
+    return signInWithPopup(auth, GoogleProvider);
   }, []);
 
   const logout = useCallback(() => {
