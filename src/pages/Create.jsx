@@ -9,6 +9,7 @@ import {
   Text,
   IconButton,
   SimpleGrid,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 import { BiShareAlt } from 'react-icons/bi';
@@ -18,6 +19,7 @@ import LoadingBar from '../components/Create/LoadingBar';
 import ShareModal from '../components/Create/ShareModal';
 
 export default function ImageGenerationForm() {
+  const iconButtonSize = useBreakpointValue({ base: 'sm', md: 'sm', lg: 'md' });
   const [inputValue, setInputValue] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -151,7 +153,7 @@ export default function ImageGenerationForm() {
                 >
                   <Image src={image} alt="Generated image" maxW={'400px'} />
                   <IconButton
-                    size="md"
+                    size={iconButtonSize}
                     bg="white"
                     color="black"
                     position="absolute"
@@ -167,13 +169,12 @@ export default function ImageGenerationForm() {
                     }}
                   />
                   <IconButton
-                    size="md"
-                    fontSize={18}
+                    size={iconButtonSize}
                     bg="white"
                     color="black"
                     position="absolute"
                     top={2}
-                    right={14}
+                    right={{ base: 12, sm: 12, md: 12, lg: 14 }}
                     aria-label="Share image"
                     icon={<BiShareAlt />}
                     onClick={() => {
