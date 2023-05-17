@@ -55,7 +55,7 @@ export default function ImageGenerationForm() {
         const response = responses.find((response) => !response.ok);
         const errorData = await response.json();
         if (errorData.error == ERROR_MODEL_LOADING) {
-          throw new Error(errorData.error + '. ETA: 90s');
+          throw new Error('Model is currently loading, estimated time: 90s');
         } else throw new Error(errorData.error);
       }
 
