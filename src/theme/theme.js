@@ -32,6 +32,28 @@ const theme = extendTheme({
             borderColor: 'grey',
           },
         },
+        outlineOrange: {
+          field: {
+            bg: 'transparent',
+            border: '1px solid grey',
+            _focus: {
+              border: '2px solid #f47533',
+              borderWidth: '2px',
+            },
+            transition: 'border-width 0.1s',
+          },
+        },
+        outlineGreen: {
+          field: {
+            bg: 'transparent',
+            border: '1px solid grey',
+            _focus: {
+              border: '2px solid #d4e45d',
+              borderWidth: '2px',
+            },
+            transition: 'border-width 0.1s',
+          },
+        },
       },
     },
 

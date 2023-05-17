@@ -34,7 +34,6 @@ export default function LoginForm() {
   const handleEmailSignIn = async (event) => {
     event.preventDefault();
     setIsAuthLoading(true);
-    setAuthError('');
     try {
       await signIn(email, password);
       setIsAuthLoading(false);
@@ -79,6 +78,7 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
+            variant="outlineGreen"
           />
         </FormControl>
         <FormControl id="password">
@@ -87,6 +87,7 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
+            variant="outlineGreen"
           />
         </FormControl>
         <Stack spacing={6}>
@@ -94,7 +95,7 @@ export default function LoginForm() {
             onClick={handleEmailSignIn}
             mt={4}
             type="submit"
-            bg={'#D4E45D'}
+            bg={'#d4e45d'}
             _hover={{
               bg: '#9aaa1d',
             }}

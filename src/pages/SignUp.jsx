@@ -9,7 +9,7 @@ export default function SignUp() {
   return (
     <>
       <Navbar />
-      <Stack direction={{ base: 'column', md: 'row' }}>
+      <Stack h={'100svh'} direction={{ base: 'column', md: 'row' }}>
         <BackgroundImage image={signup_bg} />
         <SignUpForm />
       </Stack>

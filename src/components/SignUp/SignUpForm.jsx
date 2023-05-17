@@ -25,32 +25,25 @@ export default function SignUpForm() {
   const { createUser } = UserAuth();
   const navigate = useNavigate();
 
-  const authError_EMAIL_ALREADY_IN_USE = 'auth/email-already-in-use';
+  const ERROR_EMAIL_ALREADY_IN_USE = 'auth/email-already-in-use';
 
   const handleSignUp = async (event) => {
     event.preventDefault();
     setIsAuthLoading(true);
-    setAuthError('');
-    if (!validator.passwordsMatch(password, confirmPassword)) {
-      setAuthError('Passwords do not match');
-      return;
-    }
-    if (!validator.isStrongPassword(password)) {
-      setAuthError('The password must be at least 6 characters.');
-      return;
-    }
-    if (!validator.isValidEmail(email)) {
-      setAuthError('Invalid email address.');
-      return;
-    }
     try {
       await createUser(email, password);
       navigate('/dashboard');
     } catch (e) {
       setAuthError(e.message);
       const errorCode = e.code;
-      if (errorCode === authError_EMAIL_ALREADY_IN_USE) {
+      if (errorCode === ERROR_EMAIL_ALREADY_IN_USE) {
         setAuthError('Email is already in use.');
+      } else if (!validator.passwordsMatch(password, confirmPassword)) {
+        setAuthError('Passwords do not match');
+      } else if (!validator.isStrongPassword(password)) {
+        setAuthError('The password must be at least 6 characters.');
+      } else if (!validator.isValidEmail(email)) {
+        setAuthError('Invalid email address.');
       }
       setIsAuthLoading(false);
     }
@@ -81,6 +74,7 @@ export default function SignUpForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
+              variant="outlineOrange"
             />
           </FormControl>
           <FormControl id="password">
@@ -89,6 +83,7 @@ export default function SignUpForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
+              variant="outlineOrange"
             />
           </FormControl>
           <FormControl id="password">
@@ -97,16 +92,18 @@ export default function SignUpForm() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               type="password"
+              variant="outlineOrange"
             />
           </FormControl>
           <Stack spacing={6}>
             <Button
               bg={'#f47533'}
               _hover={{
-                bg: '#E4450E',
+                bg: '#e4450e',
               }}
               color={'black'}
               variant={'solid'}
+              type="submit"
               onClick={handleSignUp}
             >
               {isAuthLoading ? <Spinner size={'sm'} /> : 'Sign up'}
