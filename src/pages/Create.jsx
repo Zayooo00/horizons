@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Textarea,
@@ -20,6 +20,7 @@ import ShareModal from '../components/Create/ShareModal';
 
 export default function ImageGenerationForm() {
   const iconButtonSize = useBreakpointValue({ base: 'sm', md: 'sm', lg: 'md' });
+  const [countdownValue, setCountdownValue] = useState(90);
   const [inputValue, setInputValue] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -29,6 +30,14 @@ export default function ImageGenerationForm() {
 
   const ERROR_MODEL_LOADING =
     'Model prompthero/openjourney is currently loading';
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdownValue((prevValue) => prevValue - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = async (event, form) => {
     const input = form.elements.input.value;
@@ -131,7 +140,13 @@ export default function ImageGenerationForm() {
         </Flex>
         {error && (
           <Flex justifyContent="center" mt={4} mx={4}>
-            <Text color={'red.600'}>{error}</Text>
+            <Text color={'red.600'}>
+              {error === 'Model is currently loading, estimated time: 90s'
+                ? countdownValue > 0
+                  ? `Model is currently loading, estimated time: ${countdownValue}s`
+                  : 'Please wait...'
+                : error}
+            </Text>
           </Flex>
         )}
         {isImageLoading && <LoadingBar />}
