@@ -18,13 +18,14 @@ import {
   Text,
   Collapse,
 } from '@chakra-ui/react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link as Nav } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 
 import { UserAuth } from '../context/AuthContext';
 import { UserContext } from '../context/UserContext';
+import { getUserById } from '../services/profiles-service';
 import logo from '../assets/images/logo.png';
 
 const links = [
@@ -65,11 +66,20 @@ function Overlay({ isOpen, onClose }) {
 export default function Headbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logout, user } = UserAuth();
-  const { userProfile } = useContext(UserContext);
+  const { userProfile: contextUserProfile } = useContext(UserContext);
+  const [stateUserProfile, setStateUserProfile] = useState(null);
+
+  useEffect(() => {
+    getUserById(user.uid).then((data) => {
+      setStateUserProfile(data);
+    });
+  }, [user.uid]);
 
   const handleLogout = async () => {
     await logout();
   };
+
+  const userProfile = stateUserProfile || contextUserProfile;
 
   return (
     <>
@@ -196,7 +206,6 @@ export default function Headbar() {
             </Menu>
           </Flex>
         </Flex>
-
         <Collapse in={isOpen}>
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
