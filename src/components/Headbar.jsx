@@ -16,6 +16,7 @@ import {
   Stack,
   Image,
   Text,
+  Collapse,
 } from '@chakra-ui/react';
 import { Link as Nav } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
@@ -48,6 +49,19 @@ const NavLink = ({ children, to }) => (
   </Link>
 );
 
+function Overlay({ isOpen, onClose }) {
+  return isOpen ? (
+    <Box
+      position="fixed"
+      top="0"
+      left="0"
+      w="100%"
+      h="100%"
+      onClick={onClose}
+    />
+  ) : null;
+}
+
 export default function Headbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [userProfile, setUserProfile] = useState(null);
@@ -65,6 +79,7 @@ export default function Headbar() {
 
   return (
     <>
+      <Overlay isOpen={isOpen} onClose={onClose} />
       <Box bg={'#294747'} px={4} position="fixed" top="0" w="100%" zIndex="1">
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
@@ -183,7 +198,7 @@ export default function Headbar() {
           </Flex>
         </Flex>
 
-        {isOpen ? (
+        <Collapse in={isOpen}>
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
               {links.map((link) => (
@@ -193,7 +208,7 @@ export default function Headbar() {
               ))}
             </Stack>
           </Box>
-        ) : null}
+        </Collapse>
       </Box>
     </>
   );
@@ -202,4 +217,9 @@ export default function Headbar() {
 NavLink.propTypes = {
   children: PropTypes.node.isRequired,
   to: PropTypes.string.isRequired,
+};
+
+Overlay.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
