@@ -1,8 +1,13 @@
-/* eslint-disable react/prop-types */
-// ImagesDisplay.js
-import { Box, Image, IconButton, SimpleGrid } from '@chakra-ui/react';
+import {
+  Box,
+  Image,
+  IconButton,
+  SimpleGrid,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
 import { BiShareAlt } from 'react-icons/bi';
+import PropTypes from 'prop-types';
 
 export default function ImagesDisplay({
   images,
@@ -10,6 +15,8 @@ export default function ImagesDisplay({
   setSelectedImage,
   inputValue,
 }) {
+  const iconButtonSize = useBreakpointValue({ base: 'sm', md: 'sm', lg: 'md' });
+
   return (
     <SimpleGrid
       columns={{ base: 2, md: 4 }}
@@ -20,9 +27,15 @@ export default function ImagesDisplay({
     >
       {images.map((image, index) => (
         <Box position="relative" key={index}>
-          <Box transition="transform 0.2s ease-in-out">
+          <Box
+            transition="transform 0.2s ease-in-out"
+            _hover={{
+              transform: 'scale(0.9)',
+            }}
+          >
             <Image src={image} alt="Generated image" maxW={'400px'} />
             <IconButton
+              size={iconButtonSize}
               bg="white"
               color="black"
               position="absolute"
@@ -38,6 +51,7 @@ export default function ImagesDisplay({
               }}
             />
             <IconButton
+              size={iconButtonSize}
               bg="white"
               color="black"
               position="absolute"
@@ -56,3 +70,10 @@ export default function ImagesDisplay({
     </SimpleGrid>
   );
 }
+
+ImagesDisplay.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onShare: PropTypes.func.isRequired,
+  setSelectedImage: PropTypes.func.isRequired,
+  inputValue: PropTypes.string.isRequired,
+};

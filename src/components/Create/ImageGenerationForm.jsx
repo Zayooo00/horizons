@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Textarea, Button, Flex, Text, Spinner } from '@chakra-ui/react';
+import PropTypes from 'prop-types';
 
 export default function ImageGenerationForm({
   onSubmit,
@@ -8,8 +8,17 @@ export default function ImageGenerationForm({
   error,
 }) {
   const [inputValue, setInputValue] = useState('');
+  const [countdownValue, setCountdownValue] = useState(180);
   const ERROR_MODEL_LOADING =
     'Model prompthero/openjourney is currently loading';
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdownValue((prevValue) => prevValue - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -63,7 +72,9 @@ export default function ImageGenerationForm({
         <Flex justifyContent="center" mt={4} mx={4}>
           <Text color={'red.600'}>
             {error === ERROR_MODEL_LOADING
-              ? `Model is currently loading`
+              ? countdownValue > 0
+                ? `AI Model is currently starting up, estimated time: ${countdownValue}s`
+                : 'Please wait...'
               : error}
           </Text>
         </Flex>
@@ -71,3 +82,9 @@ export default function ImageGenerationForm({
     </Box>
   );
 }
+
+ImageGenerationForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  isImageLoading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+};
