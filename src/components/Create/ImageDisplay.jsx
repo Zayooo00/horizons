@@ -36,8 +36,8 @@ export default function ImagesDisplay({
             <Image src={image} alt="Generated image" maxW={'400px'} />
             <IconButton
               size={iconButtonSize}
-              bg="white"
-              color="black"
+              bg="#181a1b"
+              color="white"
               position="absolute"
               top={2}
               right={2}
@@ -52,8 +52,8 @@ export default function ImagesDisplay({
             />
             <IconButton
               size={iconButtonSize}
-              bg="white"
-              color="black"
+              bg="#181a1b"
+              color="white"
               position="absolute"
               top={2}
               right={{ base: 12, sm: 12, md: 12, lg: 14 }}
