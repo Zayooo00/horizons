@@ -217,6 +217,7 @@ export default function OnboardingModal() {
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       closeOnOverlayClick={false}
+      closeOnEsc={false}
     >
       <ModalOverlay />
       <ModalContent p={2} mx={2} rounded={'1rem'} top={'20%'} bg={'#1c1e1f'}>
