@@ -43,7 +43,7 @@ export default function PostDetails() {
   }
 
   return (
-    <Box mt={24} mx={4}>
+    <Box mt={{ base: 20, md: 24 }} mb={4} mx={4}>
       <Center>
         <Flex
           flexDirection={{ base: 'column', md: 'row' }}
@@ -58,7 +58,7 @@ export default function PostDetails() {
           <Box p={{ base: 8, md: 6 }} mt={{ base: -8, md: 8 }} mr={4}>
             <Box
               fontWeight="semibold"
-              fontSize={{ base: 'xl', md: '3xl' }}
+              fontSize={{ base: 'lg', md: '3xl' }}
               lineHeight="tight"
               letterSpacing="wide"
               color="teal.600"
@@ -81,7 +81,13 @@ export default function PostDetails() {
               </Flex>
             </Box>
             <Divider mt={6} />
-            <Box d="flex" mt={4} alignItems="center">
+            <Box
+              w="75vw"
+              maxW={{ base: 200, md: 400 }}
+              d="flex"
+              mt={4}
+              alignItems="center"
+            >
               <Text mb={2} fontSize={'sm'}>
                 Prompt used to generate the image
               </Text>
