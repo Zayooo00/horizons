@@ -21,14 +21,28 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [isAuthLoading, setIsAuthLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const ERROR_INVALID_EMAIL = 'auth/invalid-email';
   const ERROR_WRONG_PASSWORD = 'auth/wrong-password';
   const ERROR_USER_NOT_FOUND = 'auth/user-not-found';
   const ERROR_NETWORK_REQUEST_FAILED = 'network-request-failed';
+  const ERROR_POPUP_CLOSED = 'auth/popup-closed-by-user';
 
   const handleGoogleSignIn = async () => {
-    await googleSignIn();
+    setIsGoogleLoading(true);
+    try {
+      await googleSignIn();
+    } catch (e) {
+      setAuthError(e.message);
+      const errorCode = e.code;
+      if (errorCode === ERROR_POPUP_CLOSED) {
+        setAuthError('Popup has been closed by the user.');
+        setIsGoogleLoading(false);
+      }
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   const handleEmailSignIn = async (event) => {
@@ -119,7 +133,11 @@ export default function LoginForm() {
               w={'full'}
               bg={'white'}
             >
-              <FcGoogle color="white" alt="Google Icon" />
+              {isGoogleLoading ? (
+                <Spinner size="sm" color="black" />
+              ) : (
+                <FcGoogle color="white" alt="Google Icon" />
+              )}
             </Button>
           </Center>
         </Stack>
