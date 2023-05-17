@@ -3,12 +3,12 @@ import {
   Box,
   Textarea,
   Button,
-  Spinner,
   Image,
   Flex,
   Text,
   IconButton,
   SimpleGrid,
+  Spinner,
   useBreakpointValue,
 } from '@chakra-ui/react';
 import { DownloadIcon } from '@chakra-ui/icons';
@@ -65,9 +65,7 @@ export default function ImageGenerationForm() {
       if (responses.some((response) => !response.ok)) {
         const response = responses.find((response) => !response.ok);
         const errorData = await response.json();
-        if (errorData.error == ERROR_MODEL_LOADING) {
-          throw new Error('Model is currently loading, estimated time: 90s');
-        } else throw new Error(errorData.error);
+        new Error(errorData.error);
       }
 
       const blobs = await Promise.all(
@@ -123,10 +121,11 @@ export default function ImageGenerationForm() {
           />
           <Button
             isDisabled={!inputValue || !inputValue.trim()}
+            isLoading={isImageLoading}
+            spinner={<Spinner speed="1s" size="md" />}
             fontSize="sm"
             fontWeight={200}
             h={'38px'}
-            mt={'00.5px'}
             ml={{ base: 0, md: 2 }}
             w={{ base: 'full', md: 'auto' }}
             type="submit"
@@ -135,13 +134,13 @@ export default function ImageGenerationForm() {
               bg: '#3b5655',
             }}
           >
-            {isImageLoading ? <Spinner speed="0.9s" /> : 'Generate'}
+            Generate
           </Button>
         </Flex>
         {error && (
           <Flex justifyContent="center" mt={4} mx={4}>
             <Text color={'red.600'}>
-              {error === 'Model is currently loading, estimated time: 90s'
+              {error === ERROR_MODEL_LOADING
                 ? countdownValue > 0
                   ? `Model is currently loading, estimated time: ${countdownValue}s`
                   : 'Please wait...'
@@ -158,8 +157,8 @@ export default function ImageGenerationForm() {
             mt={8}
             mx={{ base: 4, sm: 4, md: 4, lg: 4, xl: 60 }}
           >
-            {images.map((image) => (
-              <Box position="relative" key={image.id}>
+            {images.map((image, index) => (
+              <Box position="relative" key={index}>
                 <Box
                   transition="transform 0.2s ease-in-out"
                   _hover={{
