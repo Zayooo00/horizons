@@ -1,29 +1,48 @@
-import { Card, CardBody, Center, Flex, Stack, Text } from '@chakra-ui/react';
+import {
+  Card,
+  CardBody,
+  Flex,
+  Stack,
+  Text,
+  IconButton,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { RiHome2Line } from 'react-icons/ri';
 
-import '../theme/css/NotFound.css';
-
 export default function NotFound() {
   return (
-    <Flex mt="30vh" align="center" justify="center" p={5}>
-      <Card bg="whiteAlpha.100" maxW={600}>
+    <Flex mt="25dvh" mx={4} align="center" justify="center">
+      <Card bg="whiteAlpha.100" maxW={580}>
         <CardBody p={30}>
-          <Stack spacing="3">
-            <Center>
-              <Text fontSize="6xl" color="white" pr="4">
-                404
-              </Text>
-              <Text mr={4} color="white">
-                You happened to get lost in the mysterious image generator.
-                Pressing home button will take you back to civilization.
-              </Text>
-              <div className="home-button">
-                <Link to="/" className="button">
-                  <RiHome2Line className="icon" />
-                </Link>
-              </div>
-            </Center>
+          <Stack
+            direction={{ base: 'column', sm: 'row', md: 'row' }}
+            align="center"
+          >
+            <Text
+              fontSize="6xl"
+              color="white"
+              pr={{ base: 0, sm: 4 }}
+              mb={{ base: -2, sm: 0 }}
+            >
+              404
+            </Text>
+            <Text color="white" textAlign={{ base: 'center', sm: 'left' }}>
+              You happened to get lost in the mysterious image generator.
+              Pressing home button will take you back to civilization.
+            </Text>
+            <Link to="/">
+              <IconButton
+                ml={{ base: 0, sm: 2 }}
+                mt={{ base: 2, sm: 0 }}
+                rounded={'1rem'}
+                border="3px white solid"
+                aria-label="Home"
+                icon={<RiHome2Line />}
+                colorScheme="white"
+                fontSize="25px"
+                boxSize="60px"
+              />
+            </Link>
           </Stack>
         </CardBody>
       </Card>
