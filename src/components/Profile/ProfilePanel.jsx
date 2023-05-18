@@ -9,8 +9,9 @@ import {
   useColorMode,
   useColorModeValue,
   Image,
+  Box,
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaPenFancy } from 'react-icons/fa';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
@@ -27,6 +28,7 @@ export default function ProfilePanel() {
   const { colorMode } = useColorMode();
   const { user, logout } = UserAuth();
   const navigate = useNavigate();
+  const [showDetailsId, setShowDetailsId] = useState(null);
   const headerColor = useColorModeValue('gray.700', 'white');
   const textColor = useColorModeValue('white', 'white');
   const [userPosts, setUserPosts] = useState([]);
@@ -211,7 +213,28 @@ export default function ProfilePanel() {
                 >
                   {userPosts.map((post) => (
                     <Link key={post.postId} to={`/post/${post.postId}`}>
-                      <Image src={post.image} />
+                      <Box
+                        position="relative"
+                        onMouseEnter={() => setShowDetailsId(post.postId)}
+                        onMouseLeave={() => setShowDetailsId(null)}
+                      >
+                        <Image src={post.image} />
+                        {showDetailsId === post.postId && (
+                          <Box
+                            position="absolute"
+                            top={0}
+                            left={0}
+                            right={0}
+                            bottom={0}
+                            bg="rgba(0, 0, 0, 0.2)"
+                            color="white"
+                            display="flex"
+                            flexDirection="column"
+                            justifyContent="flex-end"
+                            alignItems="flex-start"
+                          ></Box>
+                        )}
+                      </Box>
                     </Link>
                   ))}
                 </Grid>
