@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Progress, Center } from '@chakra-ui/react';
 
 export default function LoadingBar() {
-  const [progress, setProgress] = React.useState(0);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
