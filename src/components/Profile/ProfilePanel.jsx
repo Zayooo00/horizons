@@ -218,7 +218,7 @@ export default function ProfilePanel() {
                         onMouseEnter={() => setShowDetailsId(post.postId)}
                         onMouseLeave={() => setShowDetailsId(null)}
                       >
-                        <Image src={post.image} />
+                        <Image h={322} objectFit="cover" src={post.image} />
                         {showDetailsId === post.postId && (
                           <Box
                             position="absolute"
