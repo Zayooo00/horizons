@@ -1,5 +1,4 @@
 import { Box, useStyleConfig } from '@chakra-ui/react';
-import React from 'react';
 import PropTypes from 'prop-types';
 
 export default function CardBody(props) {

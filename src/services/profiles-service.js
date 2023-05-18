@@ -1,4 +1,4 @@
-import { getDoc, setDoc, doc, collection } from 'firebase/firestore';
+import { getDoc, setDoc, updateDoc, doc, collection } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 
 const profilesCollection = collection(db, 'profiles');
@@ -27,4 +27,9 @@ export async function getUserById(userId) {
   } else {
     return null;
   }
+}
+
+export async function updateUserInfo(userId, userInfo) {
+  const userDocRef = doc(profilesCollection, userId);
+  await updateDoc(userDocRef, userInfo);
 }

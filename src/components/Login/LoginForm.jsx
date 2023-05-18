@@ -11,7 +11,7 @@ import {
   Text,
   Spinner,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { UserAuth } from '../../context/AuthContext';
 

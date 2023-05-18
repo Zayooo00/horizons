@@ -1,11 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  Text,
+  Heading,
   FormControl,
   FormLabel,
   Textarea,
@@ -16,11 +11,14 @@ import {
   HStack,
   FormErrorMessage,
   FormErrorIcon,
+  Box,
+  Flex,
+  useToast,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import PropTypes from 'prop-types';
 
-import { uploadUserInfo } from '../../services/profiles-service';
+import { updateUserInfo, getUserById } from '../../services/profiles-service';
 import { getUserFromLocalStorage } from '../../context/AuthContext';
 import Validator from '../../helpers/Validator';
 import {
@@ -29,12 +27,14 @@ import {
   convertToLowercase,
 } from '../../helpers/Normalizer';
 
-export default function OnboardingModal({ setUserProfile }) {
+export default function SettingsForm() {
   const currentUserId = getUserFromLocalStorage();
+  const [isAvatarUpdated, setIsAvatarUpdated] = useState(false);
   const validator = Validator.getInstance();
+  const navigate = useNavigate();
+  const toast = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValid, setIsValid] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
   const [profile, setProfile] = useState({
     firstName: '',
     lastName: '',
@@ -50,6 +50,15 @@ export default function OnboardingModal({ setUserProfile }) {
     avatar: '',
   });
   const fileInputRef = useRef();
+
+  useEffect(() => {
+    async function fetchUserProfile() {
+      const userProfile = await getUserById(currentUserId);
+      setProfile(userProfile);
+      setAvatar(userProfile.avatar);
+    }
+    fetchUserProfile();
+  }, [currentUserId]);
 
   useEffect(() => {
     const isFormValid = () => {
@@ -77,7 +86,7 @@ export default function OnboardingModal({ setUserProfile }) {
     setIsSubmitting(true);
     let downloadURL;
 
-    if (avatar) {
+    if (avatar && isAvatarUpdated) {
       const storage = getStorage();
       const storageRef = ref(storage, `avatars/${currentUserId}`);
       const response = await fetch(avatar);
@@ -85,12 +94,20 @@ export default function OnboardingModal({ setUserProfile }) {
 
       await uploadBytes(storageRef, blob);
       downloadURL = await getDownloadURL(storageRef);
+    } else {
+      downloadURL = avatar;
     }
 
-    uploadUserInfo(profile, downloadURL, currentUserId);
-    setUserProfile({ ...profile, avatar: downloadURL });
-    setIsOpen(false);
+    updateUserInfo(currentUserId, { ...profile, avatar: downloadURL });
     setIsSubmitting(false);
+    navigate('/profile');
+    toast({
+      title: 'Profile updated.',
+      description: 'Your profile has been successfully updated.',
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    });
   };
 
   function handleFirstNameChange(event) {
@@ -182,6 +199,7 @@ export default function OnboardingModal({ setUserProfile }) {
 
       reader.onload = (e) => {
         setAvatar(e.target.result);
+        setIsAvatarUpdated(true);
       };
 
       reader.readAsDataURL(avatar);
@@ -219,26 +237,18 @@ export default function OnboardingModal({ setUserProfile }) {
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
-      closeOnOverlayClick={false}
-      closeOnEsc={false}
-    >
-      <ModalOverlay />
-      <ModalContent
-        w={{ base: '95%', md: 'auto ' }}
-        p={2}
-        mx={2}
-        rounded={'1rem'}
-        top={{ base: '15%', md: '20%' }}
-        bg={'#1c1e1f'}
-      >
-        <ModalHeader>Welcome to Horizons!</ModalHeader>
-        <ModalBody>
-          <Text mt={-2} mb={4}>
-            Fill up additional info and let&apos;s get you started.
-          </Text>
+    <>
+      <Flex justifyContent="center" alignItems="center" minHeight="100dvh">
+        <Box
+          w={{ base: '95%', md: '80%', lg: '50%', xl: '40%' }}
+          p={4}
+          mx={2}
+          rounded={'1rem'}
+          bg={'#282c2e'}
+        >
+          <Heading p={4} fontSize="2xl" mt={-2} mb={4}>
+            Update your profile information.
+          </Heading>
           <HStack spacing={4} alignItems="flex-start">
             <FormControl
               isRequired
@@ -310,7 +320,7 @@ export default function OnboardingModal({ setUserProfile }) {
                     fileInputRef.current.click();
                   }}
                 >
-                  {avatar ? 'Uploaded!' : 'Choose File'}
+                  {isAvatarUpdated ? 'Uploaded!' : 'Change'}
                 </Button>
                 {errors.avatar && (
                   <FormErrorMessage>
@@ -360,12 +370,8 @@ export default function OnboardingModal({ setUserProfile }) {
               Submit
             </Button>
           </Stack>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+        </Box>
+      </Flex>
+    </>
   );
 }
-
-OnboardingModal.propTypes = {
-  setUserProfile: PropTypes.func.isRequired,
-};
