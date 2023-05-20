@@ -126,7 +126,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
           shadow="xl"
           maxW={1260}
         >
-          <Box p={6} maxW={600}>
+          <Box pr={6} maxW={600}>
             <Image
               objectFit="cover"
               maxH={700}
@@ -246,7 +246,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
                   ? '1 comment'
                   : comments.length + ' comments'}
               </Text>
-              <Box mt={2} maxH="250px" overflowY="auto">
+              <Box mt={2} maxH="235px" overflowY="auto">
                 {comments.length > 0 ? (
                   comments.map((comment) => (
                     <Flex key={comment.timestamp} mt={4}>
