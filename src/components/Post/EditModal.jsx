@@ -16,33 +16,39 @@ import {
   FormErrorIcon,
   useToast,
 } from '@chakra-ui/react';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 
-import { getUserFromLocalStorage } from '../../context/AuthContext';
-import { createPost } from '../../services/posts-service';
+import { updatePost } from '../../services/posts-service';
 import Validator from '../../helpers/Validator';
 import { capitalizeFirstLetterAndLowercaseRest } from '../../helpers/Normalizer';
 
-export default function ShareModal({ isOpen, onClose, image, prompt }) {
-  const currentUserId = getUserFromLocalStorage();
+export default function EditModal({
+  isOpen,
+  onClose,
+  post: initialPost,
+  onUpdate,
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const validator = Validator.getInstance();
   const [isValid, setIsValid] = useState(false);
   const toast = useToast();
   const [post, setPost] = useState({
     title: '',
-    author: currentUserId,
-    postId: uuidv4(),
     description: '',
-    image: image,
-    prompt: prompt,
   });
   const [errors, setErrors] = useState({
     title: '',
     description: '',
   });
+
+  useEffect(() => {
+    if (initialPost) {
+      setPost({
+        title: initialPost.title,
+        description: initialPost.description,
+      });
+    }
+  }, [initialPost]);
 
   useEffect(() => {
     const isFormValid = () => {
@@ -54,43 +60,6 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
     };
     setIsValid(isFormValid());
   }, [post.title, post.description, errors]);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    const storage = getStorage();
-    const response = await fetch(image);
-    const imageData = await response.blob();
-    const storageRef = ref(storage, `images/${post.postId}`);
-
-    await uploadBytes(storageRef, imageData);
-
-    const downloadURL = await getDownloadURL(storageRef);
-
-    setPost((prevPost) => ({
-      ...prevPost,
-      image: downloadURL,
-    }));
-    createPost({ ...post, image: downloadURL, prompt: prompt }, post.postId);
-    setIsSubmitting(false);
-    onClose();
-
-    toast({
-      title: 'Image has been shared successfully',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    });
-
-    setPost({
-      title: '',
-      author: currentUserId,
-      postId: uuidv4(),
-      description: '',
-      image: image,
-      prompt: prompt,
-    });
-  };
 
   function handleTitleChange(event) {
     const { value } = event.target;
@@ -150,11 +119,32 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
     }));
   }
 
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      await updatePost({ ...initialPost, ...post }, initialPost.postId);
+      onUpdate({ ...initialPost, ...post });
+      onClose();
+      toast({
+        title: 'Post updated',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    setIsSubmitting(false);
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent p={2} mx={2} rounded={'1rem'} top={'10%'} bg={'#1c1e1f'}>
-        <ModalHeader>Share your amazing image!</ModalHeader>
+        <ModalHeader>Edit your post</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit}>
           <ModalBody>
@@ -184,7 +174,7 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
                 onChange={(event) => handleDescriptionChange(event)}
                 onKeyPress={(event) => {
                   if (event.key === 'Enter' && post.title.trim() !== '') {
-                    handleSubmit(event, event.currentTarget.form);
+                    handleSubmit(event);
                   }
                 }}
               />
@@ -210,7 +200,7 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
                 bg: '#1a2e2e',
               }}
             >
-              Share
+              Confirm
             </Button>
             <Button
               w={'50%'}
@@ -232,9 +222,13 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
   );
 }
 
-ShareModal.propTypes = {
+EditModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  image: PropTypes.string,
-  prompt: PropTypes.string.isRequired,
+  post: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    postId: PropTypes.string.isRequired,
+  }).isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };

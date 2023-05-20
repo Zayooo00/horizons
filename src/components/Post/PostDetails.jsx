@@ -17,19 +17,20 @@ import {
 } from '@chakra-ui/react';
 import { FiMoreVertical } from 'react-icons/fi';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import PropTypes from 'prop-types';
 
 import { getPostById, deletePost } from '../../services/posts-service';
 import { getUserById } from '../../services/profiles-service';
 import { getUserFromLocalStorage } from '../../context/AuthContext';
 import HorizonsSpinner from '../HorizonsSpinner';
 
-export default function PostDetails() {
+export default function PostDetails({ onEdit, post: updatedPost }) {
   const [post, setPost] = useState('');
   const [authorProfile, setAuthorProfile] = useState('');
   const currentUserId = getUserFromLocalStorage();
   const toast = useToast();
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const handleDeletePost = async () => {
     await deletePost(post.postId);
@@ -41,6 +42,7 @@ export default function PostDetails() {
     });
     navigate(-1);
   };
+
   useEffect(() => {
     const fetchPost = async () => {
       const post = await getPostById(id);
@@ -49,6 +51,12 @@ export default function PostDetails() {
 
     fetchPost();
   }, [id]);
+
+  useEffect(() => {
+    if (updatedPost) {
+      setPost(updatedPost);
+    }
+  }, [updatedPost]);
 
   useEffect(() => {
     const fetchAuthorProfile = async () => {
@@ -76,7 +84,12 @@ export default function PostDetails() {
           maxW={1260}
         >
           <Box p={6} maxW={600}>
-            <Image rounded={'1rem'} src={post.image} alt={post.title} />
+            <Image
+              maxH={700}
+              rounded={'1rem'}
+              src={post.image}
+              alt={post.title}
+            />
           </Box>
           <Box p={{ base: 8, md: 6 }} mt={{ base: -8, md: 8 }} mr={4}>
             <Box
@@ -117,6 +130,9 @@ export default function PostDetails() {
                       _hover={{
                         bg: 'transparent',
                       }}
+                      _active={{
+                        bg: 'transparent',
+                      }}
                       size="lg"
                     />
                     <MenuList bg={'#1c1e1f'}>
@@ -138,6 +154,7 @@ export default function PostDetails() {
                         Delete
                       </MenuItem>
                       <MenuItem
+                        onClick={() => onEdit(post)}
                         mb={2}
                         bg={'#1c1e1f'}
                         _hover={{
@@ -183,3 +200,8 @@ export default function PostDetails() {
     </Box>
   );
 }
+
+PostDetails.propTypes = {
+  onEdit: PropTypes.func.isRequired,
+  post: PropTypes.object,
+};
