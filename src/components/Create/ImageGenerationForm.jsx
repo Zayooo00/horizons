@@ -25,6 +25,8 @@ export default function ImageGenerationForm({
     onSubmit(inputValue);
   };
 
+  console.log(error);
+
   return (
     <Box mt={20} as="form" onSubmit={handleSubmit}>
       <Flex mx={4} direction={{ base: 'column', md: 'row' }}>
