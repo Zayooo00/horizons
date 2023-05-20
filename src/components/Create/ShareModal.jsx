@@ -14,6 +14,7 @@ import {
   Textarea,
   FormErrorMessage,
   FormErrorIcon,
+  useToast,
 } from '@chakra-ui/react';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -29,6 +30,7 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const validator = Validator.getInstance();
   const [isValid, setIsValid] = useState(false);
+  const toast = useToast();
   const [post, setPost] = useState({
     title: '',
     author: currentUserId,
@@ -72,6 +74,14 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
     createPost({ ...post, image: downloadURL, prompt: prompt }, post.postId);
     setIsSubmitting(false);
     onClose();
+
+    toast({
+      title: 'Image has been shared successfully',
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    });
+
     setPost({
       title: '',
       author: currentUserId,
