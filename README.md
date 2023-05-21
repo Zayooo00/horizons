@@ -7,23 +7,31 @@ Horizons is a web application created for people delighted with the possibilitie
 ## Built with
 
 - React
+- React Router
+- React Icons
 - Chakra UI
 - Firebase
-- OpenAI API
+- Openjourney
+- Eslint
+- Preetier
 
-## Functionality
+## Functionalities
 
 - Email authentication
 - Social media authentication
-- Generating images based on prompt
-- Publishing and sharing images made by Horizons
+- Generating images based on prompt by AI
+- Sharing images made by Horizons
+- Like functionality
+- Comments functionality
+- Post statistics
+- Profile statistics
 
 ## Getting started
 [![Node][node.js]][node-url]
 
 ## Instalation
 
-Clone the repo and install dependencies:
+Clone the repository
   ```sh
   git clone --branch main https://github.com/Zayooo00/horizons
   ```
