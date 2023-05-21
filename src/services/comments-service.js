@@ -2,9 +2,12 @@ import {
   collection,
   query,
   where,
+  doc,
   addDoc,
+  updateDoc,
   getDocs,
   orderBy,
+  increment,
   serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
@@ -25,6 +28,13 @@ export async function fetchPostComments(postId) {
   return comments;
 }
 
+export async function getCommentCount(postId) {
+  const q = query(commentsCollection, where('postId', '==', postId));
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.size;
+}
+
 export async function addComment(postId, author, text) {
   await addDoc(commentsCollection, {
     postId,
@@ -32,4 +42,7 @@ export async function addComment(postId, author, text) {
     text,
     timestamp: serverTimestamp(),
   });
+
+  const postRef = doc(db, 'posts', postId);
+  await updateDoc(postRef, { commentCount: increment(1) });
 }

@@ -4,8 +4,10 @@ import {
   where,
   addDoc,
   deleteDoc,
+  updateDoc,
   getDocs,
   doc,
+  increment,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 
@@ -32,6 +34,9 @@ export async function hasUserLikedPost(postId, userId) {
 
 export async function addLike(postId, userId) {
   await addDoc(likesCollection, { postId, userId });
+
+  const postRef = doc(db, 'posts', postId);
+  await updateDoc(postRef, { likeCount: increment(1) });
 }
 
 export async function removeLike(postId, userId) {
@@ -47,5 +52,8 @@ export async function removeLike(postId, userId) {
     const likeDoc = querySnapshot.docs[0];
 
     await deleteDoc(doc(db, 'likes', likeDoc.id));
+
+    const postRef = doc(db, 'posts', postId);
+    await updateDoc(postRef, { likeCount: increment(-1) });
   }
 }
