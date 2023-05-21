@@ -10,6 +10,7 @@ import {
   useColorModeValue,
   Image,
   Box,
+  Spinner,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -20,17 +21,20 @@ import { getUserById } from '../../services/profiles-service';
 import { getUserPosts } from '../../services/posts-service';
 import { UserAuth, getUserFromLocalStorage } from '../../context/AuthContext';
 import Headbar from '../Headbar';
+import InfoCard from '../InfoCard';
 import Card from './ProfileCards/Card';
 import CardBody from './ProfileCards/CardBody';
 import CardHeader from './ProfileCards/CardHeader';
+import StatsDisplay from './StatsDisplay';
 
 export default function ProfilePanel() {
-  const { colorMode } = useColorMode();
-  const { user, logout } = UserAuth();
   const navigate = useNavigate();
-  const [showDetailsId, setShowDetailsId] = useState(null);
+  const { colorMode } = useColorMode();
   const headerColor = useColorModeValue('gray.700', 'white');
   const textColor = useColorModeValue('white', 'white');
+  const { user, logout } = UserAuth();
+  const [showDetailsId, setShowDetailsId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [userPosts, setUserPosts] = useState([]);
   const [userProfile, setUserProfile] = useState({
     firstName: '',
@@ -53,6 +57,7 @@ export default function ProfilePanel() {
       }
       const postsData = await getUserPosts(currentUserId);
       setUserPosts(postsData);
+      setIsLoading(false);
     }
     fetchData();
   }, []);
@@ -202,42 +207,67 @@ export default function ProfilePanel() {
                 </Text>
               </CardHeader>
               <CardBody px={2}>
-                <Grid
-                  templateColumns={{
-                    base: 'repeat(2, 1fr)',
-                    sm: 'repeat(2, 1fr)',
-                    md: 'repeat(3, 1fr)',
-                    lg: 'repeat(4, 1fr)',
-                  }}
-                  gap={6}
-                >
-                  {userPosts.map((post) => (
-                    <Link key={post.postId} to={`/post/${post.postId}`}>
-                      <Box
-                        position="relative"
-                        onMouseEnter={() => setShowDetailsId(post.postId)}
-                        onMouseLeave={() => setShowDetailsId(null)}
-                      >
-                        <Image h={322} objectFit="cover" src={post.image} />
-                        {showDetailsId === post.postId && (
-                          <Box
-                            position="absolute"
-                            top={0}
-                            left={0}
-                            right={0}
-                            bottom={0}
-                            bg="rgba(0, 0, 0, 0.2)"
-                            color="white"
-                            display="flex"
-                            flexDirection="column"
-                            justifyContent="flex-end"
-                            alignItems="flex-start"
-                          ></Box>
-                        )}
-                      </Box>
-                    </Link>
-                  ))}
-                </Grid>
+                {isLoading ? (
+                  <Center h="10dvh">
+                    <Spinner
+                      thickness="3px"
+                      speed="0.65s"
+                      emptyColor="gray.700"
+                      color="teal.500"
+                      size="lg"
+                    />
+                  </Center>
+                ) : userPosts.length === 0 ? (
+                  <Flex
+                    align="center"
+                    justify="center"
+                    my={4}
+                    mx={{ base: 4, lg: 0 }}
+                  >
+                    <InfoCard text="You haven't created any posts yet. Move to create and share one!" />
+                  </Flex>
+                ) : (
+                  <Grid
+                    templateColumns={{
+                      base: 'repeat(2, 1fr)',
+                      sm: 'repeat(2, 1fr)',
+                      md: 'repeat(3, 1fr)',
+                      lg: 'repeat(4, 1fr)',
+                    }}
+                    gap={6}
+                  >
+                    {userPosts.map((post) => (
+                      <Link key={post.postId} to={`/post/${post.postId}`}>
+                        <Box
+                          position="relative"
+                          onMouseEnter={() => setShowDetailsId(post.postId)}
+                          onMouseLeave={() => setShowDetailsId(null)}
+                        >
+                          <Image h={322} objectFit="cover" src={post.image} />
+                          {showDetailsId === post.postId && (
+                            <Box
+                              position="absolute"
+                              top={0}
+                              left={0}
+                              right={0}
+                              bottom={0}
+                              bg="rgba(0, 0, 0, 0.5)"
+                              color="white"
+                              display="flex"
+                              justifyContent="center"
+                              alignItems="center"
+                            >
+                              <StatsDisplay
+                                likeCount={post.likeCount || 0}
+                                commentCount={post.commentCount || 0}
+                              />
+                            </Box>
+                          )}
+                        </Box>
+                      </Link>
+                    ))}
+                  </Grid>
+                )}
               </CardBody>
             </Card>
           </Grid>
