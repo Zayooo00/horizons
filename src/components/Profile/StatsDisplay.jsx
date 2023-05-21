@@ -3,7 +3,7 @@ import { Text, Icon, Flex } from '@chakra-ui/react';
 import { AiFillHeart } from 'react-icons/ai';
 import { FaComment } from 'react-icons/fa';
 
-export default function LikesAndCommentsDisplay({ likeCount, commentCount }) {
+export default function StatsDisplay({ likeCount, commentCount }) {
   return (
     <Flex fontSize="lg" gap={8}>
       <Flex>
