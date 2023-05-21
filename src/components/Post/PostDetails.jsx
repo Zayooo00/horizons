@@ -48,7 +48,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
   const [authorProfile, setAuthorProfile] = useState('');
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(post.likeCount);
   const [newCommentText, setNewCommentText] = useState('');
   const currentUserId = getUserFromLocalStorage();
   const toast = useToast();
