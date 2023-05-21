@@ -37,6 +37,10 @@ export default function ImagesDisplay({
             <IconButton
               size={iconButtonSize}
               bg="#181a1b"
+              _hover={{
+                bg: 'white',
+                color: 'black',
+              }}
               color="white"
               position="absolute"
               top={2}
@@ -53,6 +57,10 @@ export default function ImagesDisplay({
             <IconButton
               size={iconButtonSize}
               bg="#181a1b"
+              _hover={{
+                bg: 'white',
+                color: 'black',
+              }}
               color="white"
               position="absolute"
               top={2}
