@@ -169,6 +169,7 @@ export default function EditModal({
               <Textarea
                 type="text"
                 name="description"
+                border="1px solid grey"
                 isInvalid={errors.description}
                 value={post.description}
                 onChange={(event) => handleDescriptionChange(event)}

@@ -48,7 +48,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
   const [authorProfile, setAuthorProfile] = useState('');
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(post.likeCount);
   const [newCommentText, setNewCommentText] = useState('');
   const currentUserId = getUserFromLocalStorage();
   const toast = useToast();
@@ -90,7 +90,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
       const isLiked = await hasUserLikedPost(post.postId, currentUserId);
       setLiked(isLiked);
 
-      const count = await getLikeCount(post.postId);
+      const count = await getLikeCount([post.postId]);
       setLikeCount(count);
     };
 
@@ -110,6 +110,9 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
     setNewCommentText('');
     const comments = await fetchPostComments(id);
     setComments(comments);
+
+    const userData = await getUserById(currentUserId);
+    setUsers((prevUsers) => ({ ...prevUsers, [currentUserId]: userData }));
   };
 
   const handleLikeClick = async () => {
@@ -121,7 +124,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
       setLiked(true);
     }
 
-    const count = await getLikeCount(post.postId);
+    const count = await getLikeCount([post.postId]);
     setLikeCount(count);
   };
 
@@ -142,7 +145,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
           <Box pr={{ base: 0, lg: 6 }} maxW={600}>
             <Image
               objectFit="cover"
-              maxH={700}
+              maxH={{ base: 600, lg: 725 }}
               roundedTop={{ base: '2rem', lg: '0rem' }}
               roundedTopLeft={{ base: '2rem', lg: '2rem' }}
               roundedBottomLeft={{ base: '0rem', lg: '2rem' }}
@@ -150,7 +153,11 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
               alt={post.title}
             />
           </Box>
-          <Box p={{ base: 4, sm: 6, md: 8, lg: 6 }} mr={{ base: 0, lg: 4 }}>
+          <Box
+            p={{ base: 4, sm: 6, md: 8, lg: 6 }}
+            mr={{ base: 0, lg: 4 }}
+            w={{ base: 'auto', lg: 400 }}
+          >
             <Flex justifyContent="space-between" alignItems="center">
               <Box
                 fontWeight="semibold"
@@ -162,10 +169,16 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
               >
                 {post.title}
               </Box>
-              <Flex alignItems="center">
+              <Flex
+                pr="10px"
+                rounded="1rem"
+                alignItems="center"
+                bg="whiteAlpha.300"
+              >
                 <IconButton
                   aria-label="Like post"
-                  fontSize={28}
+                  fontSize={{ base: 18, lg: 22 }}
+                  mr={-1}
                   icon={
                     liked ? <AiFillHeart color="red" /> : <AiOutlineHeart />
                   }
@@ -177,12 +190,12 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
                   }}
                   onClick={handleLikeClick}
                 />
-                <Text fontSize="lg" fontWeight="bold">
+                <Text fontSize={{ base: '14px', lg: '16px' }} fontWeight="bold">
                   {likeCount}
                 </Text>
               </Flex>
             </Flex>
-            <Box>{post.description}</Box>
+            <Box mt={2}>{post.description}</Box>
             <Box mt={6}>
               <Flex alignItems="center" justifyContent="space-between">
                 <Flex alignItems="center" flexGrow={1}>
@@ -284,7 +297,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
                   ? '1 comment'
                   : comments.length + ' comments'}
               </Text>
-              <Box mt={2} maxH="235px" overflowY="auto">
+              <Box mt={2} maxH="280px" overflowY="auto">
                 {comments.length > 0 ? (
                   comments.map((comment) => (
                     <Flex key={comment.timestamp} mt={4}>
@@ -305,10 +318,10 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
                     </Flex>
                   ))
                 ) : (
-                  <Text mt={4}>No comments yet. Be the first to add one!</Text>
+                  <Text my={4}>No comments yet. Be the first to add one!</Text>
                 )}
               </Box>
-              <Divider mt={8} />
+              <Divider mt={4} />
               <Flex mt={8} alignItems="flex-end">
                 <Avatar src={currentUser?.avatar || ''} />
                 <InputGroup ml={4} size="sm" rounded="full" alignSelf="center">

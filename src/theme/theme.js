@@ -36,9 +36,11 @@ const theme = extendTheme({
           field: {
             bg: 'transparent',
             border: '1px solid grey',
+            _hover: {
+              border: '1px solid white',
+            },
             _focus: {
               border: '2px solid #f47533',
-              borderWidth: '2px',
             },
             transition: 'border-width 0.1s',
           },
@@ -47,9 +49,11 @@ const theme = extendTheme({
           field: {
             bg: 'transparent',
             border: '1px solid grey',
+            _hover: {
+              border: '1px solid white',
+            },
             _focus: {
               border: '2px solid #d4e45d',
-              borderWidth: '2px',
             },
             transition: 'border-width 0.1s',
           },

@@ -10,6 +10,8 @@ import {
   useColorModeValue,
   Image,
   Box,
+  Spinner,
+  Divider,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -18,24 +20,33 @@ import { RiLogoutBoxRLine } from 'react-icons/ri';
 
 import { getUserById } from '../../services/profiles-service';
 import { getUserPosts } from '../../services/posts-service';
+import { getUserStats } from '../../services/statistics-service';
 import { UserAuth, getUserFromLocalStorage } from '../../context/AuthContext';
 import Headbar from '../Headbar';
+import InfoCard from '../InfoCard';
 import Card from './ProfileCards/Card';
 import CardBody from './ProfileCards/CardBody';
 import CardHeader from './ProfileCards/CardHeader';
+import StatsDisplay from './StatsDisplay';
 
 export default function ProfilePanel() {
-  const { colorMode } = useColorMode();
-  const { user, logout } = UserAuth();
   const navigate = useNavigate();
-  const [showDetailsId, setShowDetailsId] = useState(null);
+  const { colorMode } = useColorMode();
   const headerColor = useColorModeValue('gray.700', 'white');
   const textColor = useColorModeValue('white', 'white');
+  const { user, logout } = UserAuth();
+  const [showDetailsId, setShowDetailsId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [userPosts, setUserPosts] = useState([]);
   const [userProfile, setUserProfile] = useState({
     firstName: '',
     lastName: '',
     location: '',
+  });
+  const [userStats, setUserStats] = useState({
+    postCount: 0,
+    likeCount: 0,
+    commentCount: 0,
   });
 
   const handleLogout = async () => {
@@ -51,8 +62,27 @@ export default function ProfilePanel() {
       if (userData) {
         setUserProfile(userData);
       }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const currentUserId = getUserFromLocalStorage();
+
+    async function fetchData() {
+      const statsData = await getUserStats(currentUserId);
+      setUserStats(statsData);
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const currentUserId = getUserFromLocalStorage();
+
+    async function fetchData() {
       const postsData = await getUserPosts(currentUserId);
       setUserPosts(postsData);
+      setIsLoading(false);
     }
     fetchData();
   }, []);
@@ -174,7 +204,7 @@ export default function ProfilePanel() {
             templateColumns={{ sm: '1fr', xl: 'repeat(1, 1fr)' }}
             gap="22px"
           >
-            <Card p="16px" bg="#2a2f38" rounded="2rem" mb="24px">
+            <Card p="16px" bg="#2a2f38" rounded="2rem" mb="12px">
               <CardHeader p="12px 5px">
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Profile Information
@@ -190,6 +220,27 @@ export default function ProfilePanel() {
                 </Flex>
               </CardBody>
             </Card>
+            <Card p="16px" bg="#2a2f38" rounded="2rem" mb="24px">
+              <CardBody px="5px">
+                <Flex direction="row" justifyContent="space-around">
+                  <Text fontSize="md">
+                    <b>{userStats.postCount}</b> posts
+                  </Text>
+                  <Center height="24px">
+                    <Divider orientation="vertical" />
+                  </Center>
+                  <Text fontSize="md">
+                    <b>{userStats.likeCount}</b> likes
+                  </Text>
+                  <Center height="24px">
+                    <Divider orientation="vertical" />
+                  </Center>
+                  <Text fontSize="md">
+                    <b>{userStats.commentCount}</b> comments
+                  </Text>
+                </Flex>
+              </CardBody>
+            </Card>
           </Grid>
           <Grid
             templateColumns={{ sm: '1fr', xl: 'repeat(1, 1fr)' }}
@@ -202,42 +253,67 @@ export default function ProfilePanel() {
                 </Text>
               </CardHeader>
               <CardBody px={2}>
-                <Grid
-                  templateColumns={{
-                    base: 'repeat(2, 1fr)',
-                    sm: 'repeat(2, 1fr)',
-                    md: 'repeat(3, 1fr)',
-                    lg: 'repeat(4, 1fr)',
-                  }}
-                  gap={6}
-                >
-                  {userPosts.map((post) => (
-                    <Link key={post.postId} to={`/post/${post.postId}`}>
-                      <Box
-                        position="relative"
-                        onMouseEnter={() => setShowDetailsId(post.postId)}
-                        onMouseLeave={() => setShowDetailsId(null)}
-                      >
-                        <Image h={322} objectFit="cover" src={post.image} />
-                        {showDetailsId === post.postId && (
-                          <Box
-                            position="absolute"
-                            top={0}
-                            left={0}
-                            right={0}
-                            bottom={0}
-                            bg="rgba(0, 0, 0, 0.2)"
-                            color="white"
-                            display="flex"
-                            flexDirection="column"
-                            justifyContent="flex-end"
-                            alignItems="flex-start"
-                          ></Box>
-                        )}
-                      </Box>
-                    </Link>
-                  ))}
-                </Grid>
+                {isLoading ? (
+                  <Center h="10dvh">
+                    <Spinner
+                      thickness="3px"
+                      speed="0.65s"
+                      emptyColor="gray.700"
+                      color="teal.500"
+                      size="lg"
+                    />
+                  </Center>
+                ) : userPosts.length === 0 ? (
+                  <Flex
+                    align="center"
+                    justify="center"
+                    my={4}
+                    mx={{ base: 4, lg: 0 }}
+                  >
+                    <InfoCard text="You haven't created any posts yet. Move to create and share one!" />
+                  </Flex>
+                ) : (
+                  <Grid
+                    templateColumns={{
+                      base: 'repeat(2, 1fr)',
+                      sm: 'repeat(2, 1fr)',
+                      md: 'repeat(3, 1fr)',
+                      lg: 'repeat(4, 1fr)',
+                    }}
+                    gap={6}
+                  >
+                    {userPosts.map((post) => (
+                      <Link key={post.postId} to={`/post/${post.postId}`}>
+                        <Box
+                          position="relative"
+                          onMouseEnter={() => setShowDetailsId(post.postId)}
+                          onMouseLeave={() => setShowDetailsId(null)}
+                        >
+                          <Image h={322} objectFit="cover" src={post.image} />
+                          {showDetailsId === post.postId && (
+                            <Box
+                              position="absolute"
+                              top={0}
+                              left={0}
+                              right={0}
+                              bottom={0}
+                              bg="rgba(0, 0, 0, 0.5)"
+                              color="white"
+                              display="flex"
+                              justifyContent="center"
+                              alignItems="center"
+                            >
+                              <StatsDisplay
+                                likeCount={post.likeCount || 0}
+                                commentCount={post.commentCount || 0}
+                              />
+                            </Box>
+                          )}
+                        </Box>
+                      </Link>
+                    ))}
+                  </Grid>
+                )}
               </CardBody>
             </Card>
           </Grid>
