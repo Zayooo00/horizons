@@ -18,16 +18,28 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
-import { FiMoreVertical, FiSend } from 'react-icons/fi';
-import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import { FiMoreVertical } from 'react-icons/fi';
+import {
+  AiOutlineDelete,
+  AiOutlineEdit,
+  AiOutlineSend,
+  AiFillHeart,
+  AiOutlineHeart,
+} from 'react-icons/ai';
 import PropTypes from 'prop-types';
 
-import { getPostById, deletePost } from '../../services/posts-service';
-import { getUserById } from '../../services/profiles-service';
 import { getUserFromLocalStorage } from '../../context/AuthContext';
 import HorizonsSpinner from '../HorizonsSpinner';
 import TimeSinceComment from './TimeSinceComment';
 import { fetchPostComments, addComment } from '../../services/comments-service';
+import { getPostById, deletePost } from '../../services/posts-service';
+import { getUserById } from '../../services/profiles-service';
+import {
+  addLike,
+  removeLike,
+  hasUserLikedPost,
+  getLikeCount,
+} from '../../services/likes-service';
 
 export default function PostDetails({ onEdit, post: updatedPost }) {
   const [post, setPost] = useState('');
@@ -35,6 +47,8 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [authorProfile, setAuthorProfile] = useState('');
   const [comments, setComments] = useState([]);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const [newCommentText, setNewCommentText] = useState('');
   const currentUserId = getUserFromLocalStorage();
   const toast = useToast();
@@ -53,42 +67,16 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
   };
 
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchData = async () => {
       const post = await getPostById(id);
       setPost(post);
-    };
 
-    fetchPost();
-  }, [id]);
-
-  useEffect(() => {
-    if (updatedPost) {
-      setPost(updatedPost);
-    }
-  }, [updatedPost]);
-
-  useEffect(() => {
-    const fetchAuthorProfile = async () => {
       const profile = await getUserById(post.author);
       setAuthorProfile(profile);
-    };
 
-    if (post) {
-      fetchAuthorProfile();
-    }
-  }, [post]);
-
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
       const currentUserData = await getUserById(currentUserId);
       setCurrentUser(currentUserData);
-    };
 
-    fetchCurrentUser();
-  }, [currentUserId]);
-
-  useEffect(() => {
-    const fetchComments = async () => {
       const comments = await fetchPostComments(id);
       setComments(comments);
 
@@ -98,18 +86,43 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
         users[comment.author] = userData;
       }
       setUsers(users);
+
+      const isLiked = await hasUserLikedPost(post.postId, currentUserId);
+      setLiked(isLiked);
+
+      const count = await getLikeCount(post.postId);
+      setLikeCount(count);
     };
 
-    if (id) {
-      fetchComments();
+    if (id && currentUserId) {
+      fetchData();
     }
-  }, [id]);
+  }, [id, currentUserId]);
+
+  useEffect(() => {
+    if (updatedPost) {
+      setPost(updatedPost);
+    }
+  }, [updatedPost]);
 
   const handleAddComment = async () => {
     await addComment(id, currentUserId, newCommentText);
     setNewCommentText('');
     const comments = await fetchPostComments(id);
     setComments(comments);
+  };
+
+  const handleLikeClick = async () => {
+    if (liked) {
+      await removeLike(post.postId, currentUserId);
+      setLiked(false);
+    } else {
+      await addLike(post.postId, currentUserId);
+      setLiked(true);
+    }
+
+    const count = await getLikeCount(post.postId);
+    setLikeCount(count);
   };
 
   if (!post) {
@@ -126,26 +139,49 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
           shadow="xl"
           maxW={1260}
         >
-          <Box pr={6} maxW={600}>
+          <Box pr={{ base: 0, lg: 6 }} maxW={600}>
             <Image
               objectFit="cover"
               maxH={700}
-              rounded={'1rem'}
+              roundedTop={{ base: '2rem', lg: '0rem' }}
+              roundedTopLeft={{ base: '2rem', lg: '2rem' }}
+              roundedBottomLeft={{ base: '0rem', lg: '2rem' }}
               src={post.image}
               alt={post.title}
             />
           </Box>
-          <Box p={{ base: 8, lg: 6 }} mt={{ base: -8, lg: 2 }} mr={4}>
-            <Box
-              fontWeight="semibold"
-              fontSize={{ base: '2xl', lg: '3xl' }}
-              lineHeight="tight"
-              letterSpacing="wide"
-              color="teal.600"
-              mb={1}
-            >
-              {post.title}
-            </Box>
+          <Box p={{ base: 4, sm: 6, md: 8, lg: 6 }} mr={{ base: 0, lg: 4 }}>
+            <Flex justifyContent="space-between" alignItems="center">
+              <Box
+                fontWeight="semibold"
+                fontSize={{ base: '2xl', lg: '3xl' }}
+                lineHeight="tight"
+                letterSpacing="wide"
+                color="teal.600"
+                mb={1}
+              >
+                {post.title}
+              </Box>
+              <Flex alignItems="center">
+                <IconButton
+                  aria-label="Like post"
+                  fontSize={28}
+                  icon={
+                    liked ? <AiFillHeart color="red" /> : <AiOutlineHeart />
+                  }
+                  transition="transform 0.2s ease-in-out"
+                  bg="transparent"
+                  _hover={{
+                    bg: 'transparent',
+                    transform: 'scale(1.2)',
+                  }}
+                  onClick={handleLikeClick}
+                />
+                <Text fontSize="lg" fontWeight="bold">
+                  {likeCount}
+                </Text>
+              </Flex>
+            </Flex>
             <Box>{post.description}</Box>
             <Box mt={6}>
               <Flex alignItems="center" justifyContent="space-between">
@@ -171,8 +207,10 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
                       aria-label="Options"
                       icon={<FiMoreVertical />}
                       bg="transparent"
+                      transition="transform 0.2s ease-in-out"
                       _hover={{
                         bg: 'transparent',
+                        transform: 'scale(1.4)',
                       }}
                       _active={{
                         bg: 'transparent',
@@ -293,7 +331,7 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
                       <IconButton
                         rounded="full"
                         aria-label="Add comment"
-                        icon={<FiSend />}
+                        icon={<AiOutlineSend />}
                         bg="transparent"
                         _hover={{
                           bg: 'teal.500',
