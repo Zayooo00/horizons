@@ -33,6 +33,7 @@ export default function ImageGenerationForm({
         <Textarea
           name="input"
           color="white"
+          border="1px solid grey"
           _placeholder={{ color: 'gray' }}
           placeholder="Magnificent cat in a witch hat on the moon..."
           mb={{ base: 2, md: 0 }}
