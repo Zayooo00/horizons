@@ -1,9 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
+import { Flex } from '@chakra-ui/react';
 
 import OnboardingModal from '../components/Dashboard/OnboardingModal';
 import Headbar from '../components/Headbar';
 import MasonryLayout from '../components/Dashboard/MasonryLayout';
 import Post from '../components/Dashboard/Post';
+import HorizonsSpinner from '../components/HorizonsSpinner';
+import InfoCard from '../components/InfoCard';
 import { checkIfUserDocExists } from '../services/profiles-service';
 import { getUserFromLocalStorage } from '../context/AuthContext';
 import { UserContext } from '../context/UserContext';
@@ -14,6 +17,7 @@ export default function Dashboard() {
   const { setUserProfile } = useContext(UserContext);
   const currentUserId = getUserFromLocalStorage();
   const [posts, setPosts] = useState([]);
+  const [isFetchingImages, setIsFetchingImages] = useState(true);
 
   useEffect(() => {
     const checkUserDoc = async () => {
@@ -28,9 +32,11 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
+    setIsFetchingImages(true);
     const fetchPosts = async () => {
       const posts = await getAllPosts();
       setPosts(posts);
+      setIsFetchingImages(false);
     };
 
     fetchPosts();
@@ -40,11 +46,30 @@ export default function Dashboard() {
     <>
       {showOnboarding && <OnboardingModal setUserProfile={setUserProfile} />}
       <Headbar />
-      <MasonryLayout>
-        {posts.map((post) => (
-          <Post key={post.postId} post={post} />
-        ))}
-      </MasonryLayout>
+      {isFetchingImages ? (
+        <HorizonsSpinner />
+      ) : posts.length === 0 ? (
+        <Flex
+          display={isFetchingImages ? 'none' : 'flex'}
+          h="25dvh"
+          align="center"
+          justify="center"
+          bg="whiteAlpha.100"
+          mt="30dvh"
+          mx={{ base: 4, lg: 0 }}
+        >
+          <InfoCard
+            heading="No posts found *◠*"
+            text="There are no posts to display at the moment."
+          />
+        </Flex>
+      ) : (
+        <MasonryLayout>
+          {posts.map((post) => (
+            <Post key={post.postId} post={post} />
+          ))}
+        </MasonryLayout>
+      )}
     </>
   );
 }
