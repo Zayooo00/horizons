@@ -11,6 +11,7 @@ import {
   Image,
   Box,
   Spinner,
+  Divider,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -19,6 +20,7 @@ import { RiLogoutBoxRLine } from 'react-icons/ri';
 
 import { getUserById } from '../../services/profiles-service';
 import { getUserPosts } from '../../services/posts-service';
+import { getUserStats } from '../../services/statistics-service';
 import { UserAuth, getUserFromLocalStorage } from '../../context/AuthContext';
 import Headbar from '../Headbar';
 import InfoCard from '../InfoCard';
@@ -41,6 +43,11 @@ export default function ProfilePanel() {
     lastName: '',
     location: '',
   });
+  const [userStats, setUserStats] = useState({
+    postCount: 0,
+    likeCount: 0,
+    commentCount: 0,
+  });
 
   const handleLogout = async () => {
     await logout();
@@ -55,6 +62,24 @@ export default function ProfilePanel() {
       if (userData) {
         setUserProfile(userData);
       }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const currentUserId = getUserFromLocalStorage();
+
+    async function fetchData() {
+      const statsData = await getUserStats(currentUserId);
+      setUserStats(statsData);
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const currentUserId = getUserFromLocalStorage();
+
+    async function fetchData() {
       const postsData = await getUserPosts(currentUserId);
       setUserPosts(postsData);
       setIsLoading(false);
@@ -179,7 +204,7 @@ export default function ProfilePanel() {
             templateColumns={{ sm: '1fr', xl: 'repeat(1, 1fr)' }}
             gap="22px"
           >
-            <Card p="16px" bg="#2a2f38" rounded="2rem" mb="24px">
+            <Card p="16px" bg="#2a2f38" rounded="2rem" mb="12px">
               <CardHeader p="12px 5px">
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Profile Information
@@ -192,6 +217,27 @@ export default function ProfilePanel() {
                       {userProfile.description}
                     </Text>
                   </Flex>
+                </Flex>
+              </CardBody>
+            </Card>
+            <Card p="16px" bg="#2a2f38" rounded="2rem" mb="24px">
+              <CardBody px="5px">
+                <Flex direction="row" justifyContent="space-around">
+                  <Text fontSize="md">
+                    <b>{userStats.postCount}</b> posts
+                  </Text>
+                  <Center height="24px">
+                    <Divider orientation="vertical" />
+                  </Center>
+                  <Text fontSize="md">
+                    <b>{userStats.likeCount}</b> likes
+                  </Text>
+                  <Center height="24px">
+                    <Divider orientation="vertical" />
+                  </Center>
+                  <Text fontSize="md">
+                    <b>{userStats.commentCount}</b> comments
+                  </Text>
                 </Flex>
               </CardBody>
             </Card>
