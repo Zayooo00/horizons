@@ -28,11 +28,15 @@ export async function fetchPostComments(postId) {
   return comments;
 }
 
-export async function getCommentCount(postId) {
-  const q = query(commentsCollection, where('postId', '==', postId));
-  const querySnapshot = await getDocs(q);
-
-  return querySnapshot.size;
+export async function getCommentCount(postIds) {
+  const commentCounts = await Promise.all(
+    postIds.map(async (postId) => {
+      const q = query(commentsCollection, where('postId', '==', postId));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.size;
+    })
+  );
+  return commentCounts.reduce((a, b) => a + b, 0);
 }
 
 export async function addComment(postId, author, text) {

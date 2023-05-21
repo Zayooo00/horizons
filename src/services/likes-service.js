@@ -13,11 +13,15 @@ import { db } from '../firebase/firebase';
 
 const likesCollection = collection(db, 'likes');
 
-export async function getLikeCount(postId) {
-  const q = query(likesCollection, where('postId', '==', postId));
-  const querySnapshot = await getDocs(q);
-
-  return querySnapshot.size;
+export async function getLikeCount(postIds) {
+  const likeCounts = await Promise.all(
+    postIds.map(async (postId) => {
+      const q = query(likesCollection, where('postId', '==', postId));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.size;
+    })
+  );
+  return likeCounts.reduce((a, b) => a + b, 0);
 }
 
 export async function hasUserLikedPost(postId, userId) {
