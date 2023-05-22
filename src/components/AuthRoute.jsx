@@ -15,7 +15,7 @@ export default function AuthRoute({ children }) {
     user &&
     (location.pathname === '/' ||
       location.pathname === '/login' ||
-      location.pathname === '/signup')
+      location.pathname === '/sign-up')
   ) {
     return <Navigate to="/dashboard" />;
   }
