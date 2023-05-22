@@ -20,6 +20,6 @@ export default function InfoCard({ heading, text }) {
 }
 
 InfoCard.propTypes = {
-  heading: PropTypes.string.isRequired,
+  heading: PropTypes.string,
   text: PropTypes.string.isRequired,
 };
