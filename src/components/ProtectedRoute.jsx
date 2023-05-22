@@ -9,6 +9,7 @@ import { checkIfUserDocExists } from '../services/profiles-service';
 export default function ProtectedRoute({ children }) {
   const { user, initializing } = UserAuth();
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { userProfile } = useContext(UserContext);
   const currentUserId = getUserFromLocalStorage();
   const location = useLocation();
@@ -17,6 +18,7 @@ export default function ProtectedRoute({ children }) {
     const checkUserDoc = async () => {
       const userDocExists = await checkIfUserDocExists(currentUserId);
       setHasCompletedOnboarding(userDocExists);
+      setIsLoading(false);
     };
 
     if (user) {
@@ -24,7 +26,7 @@ export default function ProtectedRoute({ children }) {
     }
   }, [user]);
 
-  if (initializing) {
+  if (initializing || isLoading) {
     return null;
   }
 
