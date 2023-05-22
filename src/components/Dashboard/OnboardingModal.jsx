@@ -305,16 +305,19 @@ export default function OnboardingModal({ setUserProfile }) {
               <HStack alignItems="center" h={10}>
                 <Button
                   size="xs"
+                  mr={{ base: 0, sm: 2, lg: 3 }}
                   color={'black'}
                   onClick={() => {
                     fileInputRef.current.click();
                   }}
                 >
-                  {avatar ? 'Uploaded!' : 'Choose File'}
+                  {avatar ? 'Uploaded!' : 'Upload'}
                 </Button>
                 {errors.avatar && (
-                  <FormErrorMessage>
-                    <FormErrorIcon />
+                  <FormErrorMessage
+                    fontSize="xs"
+                    w={{ base: '75px', lg: '100px' }}
+                  >
                     {errors.avatar}
                   </FormErrorMessage>
                 )}
