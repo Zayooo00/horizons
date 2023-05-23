@@ -33,8 +33,8 @@ export default function StartContent() {
                 <div className="border-btn-box border-btn-red pointer-large">
                   <div className="border-btn-inner">
                     <Link to="/login">
-                      <button className="border-btn" data-text="Try now">
-                        Try now
+                      <button className="border-btn" data-text="Start now">
+                        Start now
                       </button>
                     </Link>
                   </div>
