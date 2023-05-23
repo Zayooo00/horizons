@@ -36,19 +36,16 @@ export default function Create() {
           )
       );
 
-      if (responses.some((response) => !response.ok)) {
-        const response = responses.find((response) => !response.ok);
-        const errorData = await response.json();
-        new Error(errorData.error);
+      const errorResponses = responses.filter((response) => !response.ok);
+      if (errorResponses.length > 0) {
+        const errorData = await errorResponses[0].json();
+        setError(errorData.error);
+      } else {
+        const blobs = await Promise.all(
+          responses.map((response) => response.blob())
+        );
+        setImages(blobs.map((blob) => URL.createObjectURL(blob)));
       }
-
-      const blobs = await Promise.all(
-        responses.map((response) => response.blob())
-      );
-      setImages(blobs.map((blob) => URL.createObjectURL(blob)));
-      setError(null);
-    } catch (error) {
-      setError(error.message);
     } finally {
       setIsImageLoading(false);
     }
