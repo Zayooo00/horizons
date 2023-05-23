@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Post from './pages/Post';
+import Discover from './pages/Discover';
 import Create from './pages/Create';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
@@ -63,6 +64,14 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <Post />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/discover"
+                  element={
+                    <ProtectedRoute>
+                      <Discover />
                     </ProtectedRoute>
                   }
                 />
