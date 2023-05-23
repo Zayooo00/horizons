@@ -38,10 +38,10 @@ export default function CategoryGrid() {
           justifyContent="center"
         >
           <Stack textAlign="center">
-            <Text fontSize={{ base: 'md', md: '4xl', lg: '5xl' }}>
+            <Text fontSize={{ base: 'lg', sm: '2xl', md: '4xl', lg: '5xl' }}>
               Inspire Yourself
             </Text>
-            <Text fontSize={{ base: 10, md: 'lg', lg: 'xl' }}>
+            <Text fontSize={{ base: 12, sm: 'sm', md: 'lg', lg: 'xl' }}>
               We&apos;ve prepared some categories for you to discover!
             </Text>
           </Stack>
