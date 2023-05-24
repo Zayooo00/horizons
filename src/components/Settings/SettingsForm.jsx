@@ -18,6 +18,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
+import HorizonsToast from '../HorizonsToast';
 import { updateUserInfo, getUserById } from '../../services/profiles-service';
 import { getUserFromLocalStorage } from '../../context/AuthContext';
 import Validator from '../../helpers/Validator';
@@ -102,11 +103,14 @@ export default function SettingsForm() {
     setIsSubmitting(false);
     navigate('/profile');
     toast({
-      title: 'Profile updated.',
-      description: 'Your profile has been successfully updated.',
-      status: 'success',
-      duration: 2000,
+      render: ({ onClose }) => (
+        <HorizonsToast
+          title="Your profile has been successfully updated"
+          onClose={onClose}
+        />
+      ),
       isClosable: true,
+      duration: 3000,
     });
   };
 
