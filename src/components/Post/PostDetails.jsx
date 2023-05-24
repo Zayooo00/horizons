@@ -31,6 +31,7 @@ import PropTypes from 'prop-types';
 
 import { getUserFromLocalStorage } from '../../context/AuthContext';
 import HorizonsSpinner from '../HorizonsSpinner';
+import HorizonsToast from '../HorizonsToast';
 import TimeSinceComment from './TimeSinceComment';
 import { fetchPostComments, addComment } from '../../services/comments-service';
 import { getPostById, deletePost } from '../../services/posts-service';
@@ -86,11 +87,13 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
   const handleDeletePost = async () => {
     await deletePost(post.postId);
     toast({
-      title: 'Post deleted',
-      status: 'success',
-      duration: 2000,
+      render: ({ onClose }) => (
+        <HorizonsToast title="Post deleted" onClose={onClose} />
+      ),
       isClosable: true,
+      duration: 2000,
     });
+
     navigate(-1);
   };
 
@@ -145,11 +148,14 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
             pl={2}
             fontSize={{ base: 18, sm: 24 }}
             boxSize={{ base: 6, sm: 10, md: 14 }}
-            rounded="full"
             onClick={handleNavigateBack}
             leftIcon={<ArrowBackIcon />}
             aria-label="Previous page"
+            rounded="full"
             bgColor="#294747"
+            _hover={{
+              bgColor: '#3f6a6a',
+            }}
           />
         </Box>
         <Flex

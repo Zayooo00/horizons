@@ -357,7 +357,7 @@ export default function OnboardingModal({ setUserProfile }) {
               bg="#294747"
               size="md"
               _hover={{
-                bg: '#1a2e2e',
+                bg: '#3f6a6a',
               }}
             >
               Submit

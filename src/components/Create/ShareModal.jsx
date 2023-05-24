@@ -20,6 +20,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 
+import HorizonsToast from '../HorizonsToast';
 import { getUserFromLocalStorage } from '../../context/AuthContext';
 import { createPost } from '../../services/posts-service';
 import Validator from '../../helpers/Validator';
@@ -76,10 +77,14 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
     onClose();
 
     toast({
-      title: 'Image has been shared successfully',
-      status: 'success',
-      duration: 2000,
+      render: ({ onClose }) => (
+        <HorizonsToast
+          title="Image has been shared successfully"
+          onClose={onClose}
+        />
+      ),
       isClosable: true,
+      duration: 2000,
     });
 
     setPost({
@@ -207,7 +212,7 @@ export default function ShareModal({ isOpen, onClose, image, prompt }) {
               bg="#294747"
               size="md"
               _hover={{
-                bg: '#1a2e2e',
+                bg: '#3f6a6a',
               }}
             >
               Share

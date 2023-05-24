@@ -63,7 +63,7 @@ export default function ImageGenerationForm({
           type="submit"
           bg={'#294747'}
           _hover={{
-            bg: '#3b5655',
+            bg: '#3f6a6a',
           }}
         >
           Generate

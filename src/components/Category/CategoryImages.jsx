@@ -7,20 +7,30 @@ import {
   Stack,
   Text,
   IconButton,
+  useToast,
 } from '@chakra-ui/react';
 import { CopyIcon } from '@chakra-ui/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 
 import { getCategoryByName } from '../../services/categories-service';
+import HorizonsToast from '../HorizonsToast';
 
 export default function CategoryImages() {
   const [category, setCategory] = useState(null);
   const { categoryName } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
+    toast({
+      render: ({ onClose }) => (
+        <HorizonsToast title="Copied to clipboard" onClose={onClose} />
+      ),
+      isClosable: true,
+      duration: 2000,
+    });
   };
 
   const handleNavigateBack = () => {
@@ -71,11 +81,14 @@ export default function CategoryImages() {
               pl={2}
               fontSize={{ base: 18, sm: 24 }}
               boxSize={{ base: 6, sm: 10, md: 14 }}
-              rounded="full"
               onClick={handleNavigateBack}
               leftIcon={<ArrowBackIcon />}
               aria-label="Previous page"
+              rounded="full"
               bgColor="#294747"
+              _hover={{
+                bgColor: '#3f6a6a',
+              }}
             />
           </Box>
           <Stack textAlign="center">

@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 
+import HorizonsToast from '../HorizonsToast';
 import { updatePost } from '../../services/posts-service';
 import Validator from '../../helpers/Validator';
 import { capitalizeFirstLetterAndLowercaseRest } from '../../helpers/Normalizer';
@@ -127,11 +128,13 @@ export default function EditModal({
       await updatePost({ ...initialPost, ...post }, initialPost.postId);
       onUpdate({ ...initialPost, ...post });
       onClose();
+
       toast({
-        title: 'Post updated',
-        status: 'success',
-        duration: 2000,
+        render: ({ onClose }) => (
+          <HorizonsToast title="Post updated" onClose={onClose} />
+        ),
         isClosable: true,
+        duration: 2000,
       });
     } catch (error) {
       console.error(error);
@@ -198,7 +201,7 @@ export default function EditModal({
               bg="#294747"
               size="md"
               _hover={{
-                bg: '#1a2e2e',
+                bg: '#3f6a6a',
               }}
             >
               Confirm
