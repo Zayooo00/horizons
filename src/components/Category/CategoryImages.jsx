@@ -75,7 +75,7 @@ export default function CategoryImages() {
               onClick={handleNavigateBack}
               leftIcon={<ArrowBackIcon />}
               aria-label="Previous page"
-              colorScheme="whiteAlpha"
+              bgColor="#294747"
             />
           </Box>
           <Stack textAlign="center">
