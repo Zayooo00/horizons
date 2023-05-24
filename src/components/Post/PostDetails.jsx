@@ -145,11 +145,14 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
             pl={2}
             fontSize={{ base: 18, sm: 24 }}
             boxSize={{ base: 6, sm: 10, md: 14 }}
-            rounded="full"
             onClick={handleNavigateBack}
             leftIcon={<ArrowBackIcon />}
             aria-label="Previous page"
+            rounded="full"
             bgColor="#294747"
+            _hover={{
+              bgColor: '#3f6a6a',
+            }}
           />
         </Box>
         <Flex
