@@ -18,6 +18,7 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import { FiMoreVertical } from 'react-icons/fi';
 import {
   AiOutlineDelete,
@@ -54,6 +55,33 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
   const toast = useToast();
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const handleNavigateBack = () => {
+    navigate(-1);
+  };
+
+  const handleAddComment = async () => {
+    await addComment(id, currentUserId, newCommentText);
+    setNewCommentText('');
+    const comments = await fetchPostComments(id);
+    setComments(comments);
+
+    const userData = await getUserById(currentUserId);
+    setUsers((prevUsers) => ({ ...prevUsers, [currentUserId]: userData }));
+  };
+
+  const handleLikeClick = async () => {
+    if (liked) {
+      await removeLike(post.postId, currentUserId);
+      setLiked(false);
+    } else {
+      await addLike(post.postId, currentUserId);
+      setLiked(true);
+    }
+
+    const count = await getLikeCount([post.postId]);
+    setLikeCount(count);
+  };
 
   const handleDeletePost = async () => {
     await deletePost(post.postId);
@@ -105,29 +133,6 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
     }
   }, [updatedPost]);
 
-  const handleAddComment = async () => {
-    await addComment(id, currentUserId, newCommentText);
-    setNewCommentText('');
-    const comments = await fetchPostComments(id);
-    setComments(comments);
-
-    const userData = await getUserById(currentUserId);
-    setUsers((prevUsers) => ({ ...prevUsers, [currentUserId]: userData }));
-  };
-
-  const handleLikeClick = async () => {
-    if (liked) {
-      await removeLike(post.postId, currentUserId);
-      setLiked(false);
-    } else {
-      await addLike(post.postId, currentUserId);
-      setLiked(true);
-    }
-
-    const count = await getLikeCount([post.postId]);
-    setLikeCount(count);
-  };
-
   if (!post) {
     return <HorizonsSpinner />;
   }
@@ -135,6 +140,18 @@ export default function PostDetails({ onEdit, post: updatedPost }) {
   return (
     <Box mt={{ base: 20, lg: 24 }} mb={4} mx={4}>
       <Center>
+        <Box position="absolute" top={7} left={6} transform="translateY(-50%)">
+          <IconButton
+            pl={2}
+            fontSize={{ base: 18, sm: 24 }}
+            boxSize={{ base: 6, sm: 10, md: 14 }}
+            rounded="full"
+            onClick={handleNavigateBack}
+            leftIcon={<ArrowBackIcon />}
+            aria-label="Previous page"
+            bgColor="#294747"
+          />
+        </Box>
         <Flex
           flexDirection={{ base: 'column', lg: 'row' }}
           bg="#313536"
