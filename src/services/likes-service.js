@@ -21,6 +21,7 @@ export async function getLikeCount(postIds) {
       return querySnapshot.size;
     })
   );
+
   return likeCounts.reduce((a, b) => a + b, 0);
 }
 

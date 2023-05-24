@@ -188,7 +188,7 @@ h2 {
 @media only screen and (max-width: 999px) {
 
   .responsive .ml-40 {
-    margin-left: 0;
+    margin: 0;
   }
   .responsive .text-line1-cover,
   .responsive .text-line2-cover {
@@ -211,6 +211,25 @@ h2 {
 
   .container {
     width: calc(100% - 40px);
+  }
+
+
+  .responsive .six-columns {
+    -ms-flex-preferred-size: 100%;
+    flex-basis: 100%;
+  }
+
+  .responsive .six-offset {
+    margin-left: 0;
+  }
+
+}
+
+@media only screen and (max-width: 480px) {
+
+  .container {
+    width: calc(100% - 40px);
+    text-align: center;
   }
 
 

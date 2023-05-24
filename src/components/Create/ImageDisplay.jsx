@@ -66,7 +66,8 @@ export default function ImagesDisplay({
                 right={2}
                 aria-label="Download image"
                 icon={<DownloadIcon />}
-                onClick={() => {
+                onClick={(event) => {
+                  event.stopPropagation();
                   const link = document.createElement('a');
                   link.href = image;
                   link.download = inputValue;
@@ -86,7 +87,8 @@ export default function ImagesDisplay({
                 right={{ base: 12, sm: 12, md: 12, lg: 14 }}
                 aria-label="Share image"
                 icon={<BiShareAlt />}
-                onClick={() => {
+                onClick={(event) => {
+                  event.stopPropagation();
                   setSelectedImage(image);
                   onShare();
                 }}

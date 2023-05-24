@@ -13,6 +13,8 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Post from './pages/Post';
+import Discover from './pages/Discover';
+import Category from './pages/Category';
 import Create from './pages/Create';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
@@ -63,6 +65,22 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <Post />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/discover"
+                  element={
+                    <ProtectedRoute>
+                      <Discover />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/category/:categoryName"
+                  element={
+                    <ProtectedRoute>
+                      <Category />
                     </ProtectedRoute>
                   }
                 />

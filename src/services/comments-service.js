@@ -25,6 +25,7 @@ export async function fetchPostComments(postId) {
   querySnapshot.forEach((doc) => {
     comments.push(doc.data());
   });
+
   return comments;
 }
 
@@ -33,9 +34,11 @@ export async function getCommentCount(postIds) {
     postIds.map(async (postId) => {
       const q = query(commentsCollection, where('postId', '==', postId));
       const querySnapshot = await getDocs(q);
+
       return querySnapshot.size;
     })
   );
+
   return commentCounts.reduce((a, b) => a + b, 0);
 }
 

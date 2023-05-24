@@ -38,6 +38,7 @@ export async function getAllPosts() {
   querySnapshot.forEach((doc) => {
     posts.push(doc.data());
   });
+
   return posts;
 }
 
@@ -48,6 +49,7 @@ export async function getUserPosts(currentUserId) {
   querySnapshot.forEach((doc) => {
     posts.push(doc.data());
   });
+
   return posts;
 }
 
@@ -55,5 +57,6 @@ export async function getPostById(postId) {
   const q = query(postsCollection, where('postId', '==', postId));
   const querySnapshot = await getDocs(q);
   const post = querySnapshot.docs[0]?.data();
+
   return post;
 }

@@ -14,7 +14,7 @@ export default function LoadingBar() {
   return (
     <Center>
       <Box w={'60vw'} mt={8}>
-        <Progress size="xs" colorScheme="green" value={progress} max={100} />
+        <Progress size="xs" colorScheme="green" value={progress} max={125} />
       </Box>
     </Center>
   );

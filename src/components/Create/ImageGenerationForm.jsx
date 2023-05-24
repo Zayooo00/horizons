@@ -8,9 +8,9 @@ export default function ImageGenerationForm({
   error,
 }) {
   const [inputValue, setInputValue] = useState('');
-  const [countdownValue, setCountdownValue] = useState(20);
+  const [countdownValue, setCountdownValue] = useState(60);
   const ERROR_MODEL_LOADING =
-    "Failed to execute 'blob' on 'Response': body stream already read";
+    'Model prompthero/openjourney is currently loading';
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,8 +74,8 @@ export default function ImageGenerationForm({
           <Text color={'red.600'}>
             {error === ERROR_MODEL_LOADING
               ? countdownValue > 0
-                ? `AI model is currently starting up, estimated time: ${countdownValue}s`
-                : 'Try again in a moment...'
+                ? `AI model is currently loading, estimated time: ${countdownValue}s`
+                : 'Please try again in a moment...'
               : error}
           </Text>
         </Flex>
