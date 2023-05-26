@@ -84,7 +84,7 @@ export default function Headbar() {
   return (
     <>
       <Overlay isOpen={isOpen} onClose={onClose} />
-      <Box bg={'#294747'} px={4} position="fixed" top="0" w="100%" zIndex="1">
+      <Box bg="#294747" px={4} position="fixed" top="0" w="100%" zIndex="1">
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}

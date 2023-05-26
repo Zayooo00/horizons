@@ -1,18 +1,30 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, GridItem, Image, Text, Stack } from '@chakra-ui/react';
+import {
+  Box,
+  Grid,
+  GridItem,
+  Image,
+  Text,
+  Stack,
+  Center,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
+import HorizonsSpinner from '../../components/HorizonsSpinner';
 import { getAllCategories } from '../../services/categories-service';
-import categories_bg from '../../assets/images/categories_bg.jpg';
 import { formatLinkPath } from '../../helpers/Normalizer';
+import categories_bg from '../../assets/images/categories_bg.jpg';
 
 export default function DiscoverCategories() {
   const [categories, setCategories] = useState([]);
+  const [areCategoriesLoading, setAreCategoriesLoading] = useState(false);
 
   useEffect(() => {
+    setAreCategoriesLoading(true);
     async function fetchCategories() {
       const categories = await getAllCategories();
       setCategories(categories);
+      setAreCategoriesLoading(false);
     }
     fetchCategories();
   }, []);
@@ -49,6 +61,11 @@ export default function DiscoverCategories() {
           </Stack>
         </Box>
       </Box>
+      {areCategoriesLoading && (
+        <Center mt={-24}>
+          <HorizonsSpinner />
+        </Center>
+      )}
       <Grid
         templateColumns={{
           base: 'repeat(2, 1fr)',
