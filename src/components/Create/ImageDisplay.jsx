@@ -48,7 +48,7 @@ export default function ImagesDisplay({
               transition="transform 0.2s ease-in-out"
               cursor="zoom-in"
               _hover={{
-                transform: 'scale(0.9)',
+                transform: 'scale(0.95)',
               }}
               onClick={() => handleOpenModal(image)}
             >

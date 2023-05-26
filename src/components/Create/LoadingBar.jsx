@@ -13,7 +13,7 @@ export default function LoadingBar() {
 
   return (
     <Center>
-      <Box w={'60vw'} mt={8}>
+      <Box maxW="2xl" w={{ base: '562px', sm: '672px' }} mt={8} mx={8}>
         <Progress size="xs" colorScheme="green" value={progress} max={125} />
       </Box>
     </Center>

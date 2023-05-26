@@ -12,18 +12,20 @@ export default function ImageGenerationForm({
   const ERROR_MODEL_LOADING =
     'Model prompthero/openjourney is currently loading';
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdownValue((prevValue) => prevValue - 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit(inputValue);
   };
+
+  useEffect(() => {
+    if (error === ERROR_MODEL_LOADING) {
+      const interval = setInterval(() => {
+        setCountdownValue((prevValue) => prevValue - 1);
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [error]);
 
   return (
     <Box mt={20} as="form" onSubmit={handleSubmit}>
@@ -46,7 +48,11 @@ export default function ImageGenerationForm({
             e.target.style.height = e.target.scrollHeight + 'px';
           }}
           onKeyPress={(event) => {
-            if (event.key === 'Enter' && inputValue.trim() !== '') {
+            if (
+              event.key === 'Enter' &&
+              inputValue.trim() !== '' &&
+              !isImageLoading
+            ) {
               handleSubmit(event);
             }
           }}
@@ -75,8 +81,8 @@ export default function ImageGenerationForm({
             {error === ERROR_MODEL_LOADING
               ? countdownValue > 0
                 ? `AI model is currently loading, estimated time: ${countdownValue}s`
-                : 'Please try again in a moment...'
-              : error}
+                : `Please try again in a moment...`
+              : `${error}. Please try again in a moment.`}
           </Text>
         </Flex>
       )}
