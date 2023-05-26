@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   IconButton,
+  Center,
   useToast,
 } from '@chakra-ui/react';
 import { CopyIcon } from '@chakra-ui/icons';
@@ -15,10 +16,12 @@ import { ArrowBackIcon } from '@chakra-ui/icons';
 
 import { getCategoryByName } from '../../services/categories-service';
 import HorizonsToast from '../HorizonsToast';
+import HorizonsSpinner from '../HorizonsSpinner';
 
 export default function CategoryImages() {
   const [category, setCategory] = useState(null);
   const { categoryName } = useParams();
+  const [areImagesLoading, setAreImagesLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -38,9 +41,11 @@ export default function CategoryImages() {
   };
 
   useEffect(() => {
+    setAreImagesLoading(true);
     async function fetchCategory() {
       const category = await getCategoryByName(categoryName);
       setCategory(category);
+      setAreImagesLoading(false);
     }
     fetchCategory();
   }, [categoryName]);
@@ -98,6 +103,11 @@ export default function CategoryImages() {
           </Stack>
         </Box>
       </Box>
+      {areImagesLoading && (
+        <Center mt={-24}>
+          <HorizonsSpinner />
+        </Center>
+      )}
       <Grid
         templateColumns={{
           base: 'repeat(1, 1fr)',
