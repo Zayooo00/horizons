@@ -21,10 +21,15 @@ Horizons is a web application created for people delighted with the possibilitie
 - Social media authentication
 - Generating images based on prompt by AI
 - Sharing images made by Horizons
+- Downloading images made by Horizons
+- CRUD for posts
 - Like functionality
 - Comments functionality
-- Post statistics
+- Profile customisation
 - Profile statistics
+- Post statistics
+- Discover page with example images and prompts
+- Tips display during image generation
 
 ## Getting started
 [![Node][node.js]][node-url]
