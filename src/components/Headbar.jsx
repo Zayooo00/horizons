@@ -156,7 +156,7 @@ export default function Headbar() {
                         src={userProfile?.avatar || ''}
                         name={user.email}
                       />
-                      <Flex ml={4} flexDirection="column">
+                      <Flex ml={4} flexDirection="column" w="160px">
                         <Text fontSize="sm">
                           {userProfile?.username
                             ? `@${userProfile.username}`
