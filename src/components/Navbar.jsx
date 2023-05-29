@@ -31,7 +31,7 @@ export default function Navbar() {
           justifyContent={'space-between'}
           px={4}
         >
-          <Link to="/dashboard">
+          <Link to="/">
             <Flex alignItems={'center'}>
               <Box>
                 <Image w={'40px'} src={logo} />
