@@ -24,7 +24,7 @@ export default function Navbar() {
 
   return (
     <>
-      <Box position="absolute" top={0} left={0} right={0} zIndex={1}>
+      <Box position="absolute" top={0} left={0} right={0} zIndex={2}>
         <Flex
           h={16}
           alignItems={'center'}

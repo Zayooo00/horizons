@@ -11,7 +11,10 @@ export default function Login() {
       <Navbar />
       <Stack h={'100svh'} direction={{ base: 'column', md: 'row' }}>
         <LoginForm />
-        <BackgroundImage image={login_bg} />
+        <BackgroundImage
+          image={login_bg}
+          blurhash="PLBWI%9c9I^$IER*t6RS~TIqD,%KWCWUj[WCs:oxM}WC%JWCRkof"
+        />
       </Stack>
     </>
   );

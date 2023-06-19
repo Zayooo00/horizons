@@ -10,7 +10,10 @@ export default function SignUp() {
     <>
       <Navbar />
       <Stack h={'100svh'} direction={{ base: 'column', md: 'row' }}>
-        <BackgroundImage image={signup_bg} />
+        <BackgroundImage
+          image={signup_bg}
+          blurhash="P5B{}nR400%3-WI:s7n-6;4oH;^*_3f4IAt8Bri^}jkX5@i^ivS%"
+        />
         <SignUpForm />
       </Stack>
     </>
