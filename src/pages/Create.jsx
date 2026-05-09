@@ -8,6 +8,7 @@ import ImageGenerationForm from '../components/Create/ImageGenerationForm';
 import ImagesDisplay from '../components/Create/ImageDisplay';
 import TipCard from '../components/Create/TipCard';
 import { getRandomTip } from '../services/tips-service';
+import { auth } from '../firebase/firebase';
 
 export default function Create() {
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -28,15 +29,21 @@ export default function Create() {
     setCurrentTip(randomTip);
 
     try {
+      if (!auth.currentUser) {
+        setError('You must be signed in to generate images.');
+        return;
+      }
+      const idToken = await auth.currentUser.getIdToken();
+
       const responses = await Promise.all(
         Array(4)
           .fill()
           .map(() =>
-            fetch(process.env.REACT_APP_HUGGINGFACE_API_URL, {
+            fetch('/api/generate', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${process.env.REACT_APP_HUGGINGFACE_API_TOKEN}`,
+                Authorization: `Bearer ${idToken}`,
               },
               body: JSON.stringify({ inputs: input, timestamp }),
             })
